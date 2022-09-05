@@ -1,10 +1,7 @@
-package com.dudegenuine.app.entity.user
+package com.dudegenuine.app.entity
 
 import org.ktorm.entity.Entity
 import org.ktorm.schema.*
-import java.sql.Date
-import java.time.Instant
-import java.time.LocalDateTime
 
 /**
  * Sat, 03 Sep 2022

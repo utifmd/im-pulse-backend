@@ -11,10 +11,14 @@ data class User(
     val id: String,
     val firstName: String,
     val lastName: String,
-    val password: String?,
     val about: String?,
     val profileStatus: String?,
+    val profilePicture: Image?,
     val region: String?,
+    val auth: Auth?,
+    val level: String?, //Level?,
+    val verifier: List<Verifier>,
+    val tokens: List<Token>,
     val createdAt: String,
     val updatedAt: String?
 )

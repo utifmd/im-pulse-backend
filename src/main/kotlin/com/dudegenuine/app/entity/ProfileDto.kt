@@ -1,7 +1,5 @@
-package com.dudegenuine.app.entity.user
+package com.dudegenuine.app.entity
 
-import com.dudegenuine.app.entity.user.Auths.bindTo
-import com.dudegenuine.app.entity.user.Profiles.bindTo
 import org.ktorm.entity.Entity
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
@@ -16,6 +14,7 @@ interface ProfileDto: Entity<ProfileDto>{
     val about: String
     val status: String
     val region: String
+    val picture: ImageDto?
     val updatedAt: Long?
 }
 object Profiles: Table<ProfileDto>("profiles"){
@@ -23,5 +22,6 @@ object Profiles: Table<ProfileDto>("profiles"){
     val about = varchar("about").bindTo { it.about }
     val status = varchar("status").bindTo { it.status }
     val region = varchar("region").bindTo { it.region }
+    val imageId = varchar("image_id").references(Images){ it.picture }
     val updatedAt = long("updated_at").bindTo { it.updatedAt }
 }

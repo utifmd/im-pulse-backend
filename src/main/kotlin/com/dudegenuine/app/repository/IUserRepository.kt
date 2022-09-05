@@ -8,4 +8,5 @@ import com.dudegenuine.app.model.User
  **/
 interface IUserRepository {
     fun getAllUsers(): List<User>
+    fun getUser(userId: String): User?
 }
