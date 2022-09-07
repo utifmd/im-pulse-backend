@@ -10,9 +10,10 @@ import org.ktorm.schema.varchar
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface LevelDto: Entity<LevelDto> {
-    val id: String
-    val status: String
-    val createdAt: Long?
+    var id: String
+    var status: String
+    var createdAt: Long?
+    companion object: Entity.Factory<LevelDto>()
 }
 
 object Levels: Table<LevelDto>("levels"){

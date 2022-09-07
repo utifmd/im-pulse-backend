@@ -9,13 +9,15 @@ import org.ktorm.schema.varchar
  * Sat, 03 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-interface ProfileDto: Entity<ProfileDto>{
-    val id: String
-    val about: String
-    val status: String
-    val region: String
-    val picture: ImageDto?
-    val updatedAt: Long?
+interface ProfileDto: Entity<ProfileDto> {
+    var id: String
+    var about: String
+    var status: String
+    var region: String
+    var picture: ImageDto?
+    var updatedAt: Long?
+
+    companion object: Entity.Factory<ProfileDto>()
 }
 object Profiles: Table<ProfileDto>("profiles"){
     val id = varchar("id").primaryKey().bindTo { it.id }

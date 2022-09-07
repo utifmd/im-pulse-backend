@@ -1,6 +1,9 @@
 package com.dudegenuine
 
 import com.dudegenuine.di.appModule
+import com.dudegenuine.di.mapperModule
+import com.dudegenuine.di.repositoryModule
+import com.dudegenuine.di.serviceModule
 import io.ktor.server.application.*
 import com.dudegenuine.plugins.*
 import org.koin.fileProperties
@@ -11,11 +14,7 @@ fun main(args: Array<String>): Unit =
 
 @Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
-    install(Koin){
-        fileProperties("/local.properties")
-
-        modules(appModule)
-    }
+    configureDependencyInjection()
     configureSockets()
     configureRouting()
     configureSecurity()

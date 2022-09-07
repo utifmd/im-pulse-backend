@@ -1,4 +1,4 @@
-package com.dudegenuine.app.model
+package com.dudegenuine.app.model.verifier
 
 import kotlinx.serialization.Serializable
 
@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class Verifier( //val id: String,
+data class VerifierResponse(
     val type: String,
     val payload: String,
     val updatedAt: Long?

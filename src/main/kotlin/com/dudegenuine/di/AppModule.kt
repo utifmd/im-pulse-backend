@@ -21,14 +21,4 @@ val appModule = module {
 
         Database.connect(url, user = user, password = password)
     }
-
-    single<IUserMapper> {
-        UserMapper()
-    }
-    single<IUserRepository> {
-        UserRepository(get(), get())
-    }
-    single<IUserService> {
-        UserService(get())
-    }
 }

@@ -1,4 +1,4 @@
-package com.dudegenuine.app.model
+package com.dudegenuine.app.model.token
 
 import kotlinx.serialization.Serializable
 
@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class Image(
-    val url: String,
-    val updatedAt: Long?
+data class TokenResponse(
+    val content: String,
+    val type: String,
 )

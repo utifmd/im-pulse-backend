@@ -1,15 +1,15 @@
-import org.jetbrains.kotlin.konan.properties.Properties
-
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val ktorm_version: String by project
 val koin_version: String by project
-val mysql_conn_version: String by project
+val postgres_version: String by project
+val postgres_support_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.7.10" //id("io.ktor.plugin") version "2.1.0"
+    kotlin("jvm") version "1.7.10"
+    //id("io.ktor.plugin") version "2.1.0"
                 id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
 }
 
@@ -20,11 +20,6 @@ application {
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
-
-
-    /*val properties = Properties()
-    properties.load(project.rootProject.file("local.properties").inputStream())*/
-
 }
 
 repositories {
@@ -43,8 +38,7 @@ dependencies {
     implementation("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
     implementation("org.ktorm:ktorm-core:$ktorm_version")
-    implementation("mysql:mysql-connector-java:$mysql_conn_version")
-    runtimeOnly("org.postgresql:postgresql:42.5.0")
+    implementation("org.ktorm:ktorm-support-postgresql:$ktorm_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

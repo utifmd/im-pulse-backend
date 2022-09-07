@@ -1,4 +1,4 @@
-package com.dudegenuine.app.model
+package com.dudegenuine.app.model.file
 
 import kotlinx.serialization.Serializable
 
@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class Level(
-    val status: String
+data class Image(
+    val url: String,
+    val updatedAt: Long?
 )

@@ -1,19 +1,22 @@
 package com.dudegenuine.app.entity
 
 import org.ktorm.entity.Entity
-import org.ktorm.schema.*
+import org.ktorm.schema.Table
+import org.ktorm.schema.long
+import org.ktorm.schema.varchar
 
 /**
  * Sat, 03 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface AuthDto: Entity<AuthDto> {
-    val id: String
-    val email: String
-    val username: String
-    val password: String
-    val lastPassword: String
-    val updatedAt: Long?
+    var id: String
+    var email: String
+    var username: String
+    var password: String
+    var lastPassword: String
+    var updatedAt: Long?
+    companion object: Entity.Factory<AuthDto>()
 }
 
 object Auths: Table<AuthDto>("authentications"){

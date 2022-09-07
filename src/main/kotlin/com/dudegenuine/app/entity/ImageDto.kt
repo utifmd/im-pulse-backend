@@ -10,9 +10,10 @@ import org.ktorm.schema.varchar
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface ImageDto: Entity<ImageDto> {
-    val id: String
-    val url: String
-    val updatedAt: Long?
+    var id: String
+    var url: String
+    var updatedAt: Long?
+    companion object: Entity.Factory<ImageDto>()
 }
 
 object Images: Table<ImageDto>("images"){

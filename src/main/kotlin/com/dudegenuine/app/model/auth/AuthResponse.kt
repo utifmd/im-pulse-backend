@@ -1,4 +1,4 @@
-package com.dudegenuine.app.model
+package com.dudegenuine.app.model.auth
 
 import kotlinx.serialization.Serializable
 
@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class Auth(
+data class AuthResponse(
     val email: String,
     val username: String,
     val password: String,
     val lastPassword: String,
-    val updatedAt: String?,
+    val updatedAt: String?
 )

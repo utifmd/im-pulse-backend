@@ -1,12 +1,15 @@
 package com.dudegenuine.app.mapper
 
-import com.dudegenuine.app.entity.ImageDto
-import com.dudegenuine.app.entity.LevelDto
-import com.dudegenuine.app.entity.TokenDto
-import com.dudegenuine.app.entity.AuthDto
-import com.dudegenuine.app.entity.UserDto
-import com.dudegenuine.app.entity.VerifierDto
-import com.dudegenuine.app.model.*
+import ch.qos.logback.core.CoreConstants.EMPTY_STRING
+import com.dudegenuine.app.entity.*
+import com.dudegenuine.app.model.auth.AuthResponse
+import com.dudegenuine.app.model.file.Image
+import com.dudegenuine.app.model.level.LevelResponse
+import com.dudegenuine.app.model.token.TokenResponse
+import com.dudegenuine.app.model.user.UserCensorResponse
+import com.dudegenuine.app.model.user.UserCompleteResponse
+import com.dudegenuine.app.model.verifier.VerifierResponse
+import org.ktorm.dsl.QueryRowSet
 import java.text.DateFormat
 
 /**
@@ -18,8 +21,8 @@ class UserMapper: IUserMapper {
         DateFormat
             .getDateInstance(DateFormat.DEFAULT)
             .format(timestamp)
-    override fun asUser(dto: UserDto) = with(dto){
-        User(
+    override fun asUserCompleteResponse(dto: UserDto) = with(dto){
+        UserCompleteResponse(
             id = id,
             firstName = firstName,
             lastName = lastName,
@@ -35,14 +38,14 @@ class UserMapper: IUserMapper {
             profilePicture = profileDto
                 ?.picture
                 ?.let(::asImage),
-            auth = authDto
+            authResponse = authDto
                 ?.let(::asAuth),
             level = levelDto
                 ?.status,
-            verifier = verifier
+            verifierResponse = verifier
                 ?. map(::asVerifier)
                 ?: emptyList(),
-            tokens = tokens
+            tokenResponses = tokens
                 ?. map(::asToken)
                 ?: emptyList(),
             createdAt = createdAt.let(::formattedDate),
@@ -50,10 +53,82 @@ class UserMapper: IUserMapper {
                 ?.let(::formattedDate)
         )
     }
-    override fun asUserOrNull(dto: UserDto?) = dto
-        ?.let(::asUser)
+    /*override fun asUserCompleteResponse(
+        createRequest: UserCreateRequest) = with(createRequest){
+        UserCompleteResponse(
+            id = id,
+            firstName = firstName,
+            lastName = lastName,
+            about = about,
+            profileStatus = profileStatus,
+            profilePicture = profilePicture,
+            region = region,
+            auth = auth,
+            level = level,
+            verifier = verifier,
+            tokens = tokens,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+    }*/
+    override fun asUserCensorResponse(dto: UserDto) = with(dto){
+        UserCensorResponse(
+            id = id,
+            firstName = firstName,
+            lastName = lastName,
+            email = authDto?.email,
+            username = authDto?.username,
+            profilePictureUrl = profileDto?.picture?.url,
+            region = profileDto?.region,
+            level = levelDto?.status,
+            tokens = tokens?.map(TokenDto::content) ?: emptyList(),
+            createdAt = createdAt.let(::formattedDate),
+        )
+    }
+    override fun asDto(row: QueryRowSet) = UserDto().apply {
+        val mAuth = AuthDto().apply {
+            id = row[Auths.id] ?: EMPTY_STRING
+            email = row[Auths.email] ?: EMPTY_STRING
+            username = row[Auths.username] ?: EMPTY_STRING
+            password = row[Auths.password] ?: EMPTY_STRING
+            lastPassword = row[Auths.lastPassword] ?: EMPTY_STRING
+            updatedAt = row[Auths.updatedAt] ?: System.currentTimeMillis()
+        }
+        val mPicture = ImageDto().apply {
+            id = row[Images.id] ?: EMPTY_STRING
+            url = row[Images.url] ?: EMPTY_STRING
+            updatedAt = row[Images.updatedAt]
+        }
+        val mProfile = ProfileDto().apply {
+            id = row[Profiles.id] ?: EMPTY_STRING
+            about = row[Profiles.about] ?: EMPTY_STRING
+            status = row[Profiles.status] ?: EMPTY_STRING
+            region = row[Profiles.region] ?: EMPTY_STRING
+            picture = mPicture
+            updatedAt = row[Profiles.updatedAt]
+        }
+        val mLevel = LevelDto().apply {
+            id = row[Levels.id] ?: EMPTY_STRING
+            status = row[Levels.status] ?: EMPTY_STRING
+            createdAt = row[Levels.createdAt]
+        }
+        id = row[Users.id] ?: EMPTY_STRING
+        firstName = row[Users.firstName] ?: EMPTY_STRING
+        lastName = row[Users.lastName] ?: EMPTY_STRING /*authDto = getObject("authentication", AuthDto::class.java) profileDto = getObject("profile", ProfileDto::class.java) levelDto = getObject("level", LevelDto::class.java)*/
+        createdAt = row[Users.createdAt] ?: System.currentTimeMillis()
+        updatedAt = row[Users.updatedAt]
+        authDto = mAuth
+        profileDto = mProfile
+        levelDto = mLevel
+    }
+    override fun asUserCompleteResponseOrNull(dto: UserDto?) = dto
+        ?.let(::asUserCompleteResponse)
+
+    override fun asUserCensorResponseOrNull(dto: UserDto?) = dto
+        ?.let(::asUserCensorResponse)
+
     override fun asAuth(dto: AuthDto) = with(dto){
-        Auth(
+        AuthResponse(
             email = email,
             username = username,
             password = password,
@@ -63,10 +138,10 @@ class UserMapper: IUserMapper {
         )
     }
     override fun asLevel(dto: LevelDto) = with(dto){
-        Level(status = status)
+        LevelResponse(status = status)
     }
     override fun asVerifier(dto: VerifierDto) = with(dto){
-        Verifier(
+        VerifierResponse(
             type = type,
             payload = payload,
             updatedAt = updatedAt
@@ -76,6 +151,6 @@ class UserMapper: IUserMapper {
         Image(url, updatedAt)
     }
     override fun asToken(dto: TokenDto) = with(dto){
-        Token(content, type)
+        TokenResponse(content, type)
     }
 }

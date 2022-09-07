@@ -1,13 +1,14 @@
-package com.dudegenuine.app.model
+package com.dudegenuine.app.model.file
 
 import kotlinx.serialization.Serializable
 
 /**
- * Mon, 05 Sep 2022
+ * Wed, 07 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class Token(
-    val content: String,
+data class File(
+    val id: String,
     val type: String,
+    val data: ByteArray
 )
