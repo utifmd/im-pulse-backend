@@ -10,7 +10,9 @@ import io.ktor.http.content.*
 class FileService(
     private val repository: IFileRepository): IFileService {
     override fun readFile(id: String) = repository.getFile(id)
-
-    override suspend fun uploadFile(
-        filePartData: MultiPartData) = repository.postFile(filePartData)
+    override fun deleteFile(id: String) = with(id) {
+        apply(repository::getFile)
+        apply(repository::removeFile); Unit
+    }
+    override suspend fun uploadFile(filePartData: MultiPartData) = repository.postFile(filePartData)
 }

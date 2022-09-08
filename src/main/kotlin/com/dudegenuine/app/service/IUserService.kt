@@ -10,9 +10,11 @@ import com.dudegenuine.app.model.user.UserUpdateRequest
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface IUserService {
-    fun listUsers(): List<UserCensorResponse>
+    //fun listUsers(): List<UserCensorResponse>
     fun listUsers(pageAndSize: Pair<Int, Int>): List<UserCensorResponse>
     fun createUser(createRequest: UserCreateRequest)
+    fun findUser(userId: String): UserCensorResponse
+    fun deleteUser(userId: String)
 
     /*fun updateUser(updateRequest: UserUpdateRequest)
     fun findUser(createRequest: UserCreateRequest): UserCompleteResponse*/

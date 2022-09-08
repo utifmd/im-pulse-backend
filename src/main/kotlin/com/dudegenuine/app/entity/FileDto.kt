@@ -3,6 +3,7 @@ package com.dudegenuine.app.entity
 import org.ktorm.entity.Entity
 import org.ktorm.schema.Table
 import org.ktorm.schema.blob
+import org.ktorm.schema.bytes
 import org.ktorm.schema.varchar
 
 /**
@@ -18,5 +19,5 @@ interface FileDto: Entity<FileDto> {
 object Files: Table<FileDto>("files"){
     val id = varchar("id").primaryKey().bindTo { it.id }
     val type = varchar("type").bindTo { it.type }
-    val data = blob("data").bindTo { it.data }
+    val data = bytes("data").bindTo { it.data }
 }

@@ -20,4 +20,5 @@ fun Application.module() {
     configureSecurity()
     configureSerialization()
     configureMonitoring()
+    configureException()
 }

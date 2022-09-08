@@ -11,4 +11,5 @@ import io.ktor.http.content.*
 interface IFileMapper {
     suspend fun asDto(filePartData: MultiPartData): FileDto
     fun asFile(dto: FileDto): File
+    fun asFileOrNull(dto: FileDto?): File?
 }

@@ -9,5 +9,6 @@ import io.ktor.http.content.*
  **/
 interface IFileService {
     fun readFile(id: String): File
+    fun deleteFile(id: String)
     suspend fun uploadFile(filePartData: MultiPartData): String
 }

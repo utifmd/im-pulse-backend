@@ -2,6 +2,7 @@ package com.dudegenuine.app.mapper
 
 import com.dudegenuine.app.entity.FileDto
 import com.dudegenuine.app.model.file.File
+import com.dudegenuine.app.repository.validation.BadRequestException
 import io.ktor.http.*
 import io.ktor.http.content.*
 import java.util.UUID
@@ -15,11 +16,11 @@ class FileMapper: IFileMapper {
         filePartData.forEachPart { partData ->
             type = partData.contentType
                 ?. contentType
-                ?: ContentType.MultiPart.toString()
+                ?: throw BadRequestException()
 
             when(partData){
                 is PartData.FileItem -> {
-                    id = "FILE-${UUID.randomUUID()}"
+                    id = "FLE-${UUID.randomUUID()}"
                     data = partData.streamProvider().readBytes()
                 }
                 else -> Unit
@@ -30,4 +31,6 @@ class FileMapper: IFileMapper {
     override fun asFile(dto: FileDto) = with(dto){
         File(id, type, data)
     }
+
+    override fun asFileOrNull(dto: FileDto?) = dto?.let(::asFile)
 }

@@ -8,10 +8,10 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class UserCreateRequest(
-    val id: String,
+    //val id: String,
     val firstName: String,
     val lastName: String,
-    val authId: String?,
+    val authId: String,
     val profileId: String?,
     val levelId: String?
 )

@@ -9,5 +9,6 @@ import io.ktor.http.content.*
  **/
 interface IFileRepository {
     fun getFile(id: String): File
+    fun removeFile(id: String)
     suspend fun postFile(file: MultiPartData): String
 }

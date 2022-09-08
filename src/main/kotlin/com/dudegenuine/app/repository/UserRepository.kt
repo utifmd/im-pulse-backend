@@ -6,10 +6,8 @@ import com.dudegenuine.app.model.token.TokenResponse
 import com.dudegenuine.app.model.user.*
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
-import org.ktorm.entity.filter
-import org.ktorm.entity.find
-import org.ktorm.entity.map
-import org.ktorm.entity.sequenceOf
+import org.ktorm.entity.*
+import java.util.UUID
 
 /**
  * Thu, 01 Sep 2022
@@ -18,46 +16,15 @@ import org.ktorm.entity.sequenceOf
 class UserRepository(
     private val database: Database,
     private val mapper: IUserMapper): IUserRepository {
-    override fun getAllUsersCensor() = database
-        .sequenceOf(Users)
-        .map(mapper::asUserCensorResponse)
-        .map(::oneToManyAsCensor)
-
-    /*override fun getAllUsersComplete() = database
-        .sequenceOf(Users)
-        .map(mapper::asUserComplete)
-        .map(::oneToManyAsComplete)*/
-
-    override fun getUsersCensor(pageAndSize: Pair<Int, Int>): List<UserCensorResponse> {
+    override fun getLeftUsersCensor(pageAndSize: Pair<Int, Int>): List<UserCensorResponse> {
         val (page, size) = pageAndSize
 
         return database
-            .from(Users)
-            .innerJoin(Auths, on = Users.authId eq Auths.id)
-            .innerJoin(Profiles, on = Users.profileId eq Profiles.id)
-            .innerJoin(Levels, on = Users.levelId eq Levels.id)
-            .innerJoin(Images, on = Profiles.imageId eq Images.id)
-            .select()
-            .limit(page, size)
-            .map(mapper::asDto)
+            .sequenceOf(Users)
+            .drop(page)
+            .take(size)
             .map(mapper::asUserCensorResponse)
-            .map(::oneToManyAsCensor)
     }
-    /*override fun getUsersComplete(pageAndSize: Pair<Int, Int>): List<User.Complete> {
-        val (page, size) = pageAndSize
-
-        return database
-            .from(Users)
-            .innerJoin(Auths, on = Users.authId eq Auths.id)
-            .innerJoin(Profiles, on = Users.profileId eq Profiles.id)
-            .innerJoin(Levels, on = Users.levelId eq Levels.id)
-            .innerJoin(Images, on = Profiles.imageId eq Images.id)
-            .select()
-            .limit(page, size)
-            .map(mapper::asDto)
-            .map(mapper::asUserComplete)
-            .map(::oneToManyAsComplete)
-    }*/
     override fun getUserCensor(userId: String) = database
         .sequenceOf(Users)
         .find{ it.id eq userId }
@@ -70,7 +37,7 @@ class UserRepository(
 
     override fun postUser(userRequest: UserCreateRequest) = with(userRequest){
         database.insert(Users){user ->
-            set(user.id, id)
+            set(user.id, "USR-${UUID.randomUUID()}")
             set(user.firstName, firstName)
             set(user.lastName, lastName)
             set(user.authId, authId)
@@ -78,7 +45,7 @@ class UserRepository(
             set(user.levelId, levelId)
             set(user.createdAt, System.currentTimeMillis())
             set(user.updatedAt, null)
-        }; Unit //mapper.asUserCompleteResponse(userRequest)
+        }; Unit
     }
 
     override fun putUser(userRequest: UserUpdateRequest) = with(userRequest){
@@ -91,23 +58,40 @@ class UserRepository(
         }; Unit
     }
 
-    private fun oneToManyAsCensor(user: UserCensorResponse) = with(user){
-        copy(tokens = listTokensContent(id))
+    override fun deleteUser(userId: String) {
+        database.delete(Users){ Users.id eq userId }
     }
-    /*private fun oneToManyAsComplete(user: User.Complete) = with(user){
-        copy(verifier = listVerifier(id), tokens = listTokens(id))
+
+    /*override fun getInnerUsersCensor(pageAndSize: Pair<Int, Int>): List<UserCensorResponse> {
+        val (page, size) = pageAndSize
+        return database
+            .from(Users)
+            .innerJoin(Auths, on = Users.authId eq Auths.id)
+            .innerJoin(Profiles, on = Users.profileId eq Profiles.id)
+            .innerJoin(Levels, on = Users.levelId eq Levels.id)
+            .innerJoin(Images, on = Profiles.imageId eq Images.id)
+            .select()
+            .limit(page, size)
+            .map(mapper::asDto)
+            .map(mapper::asUserCensorResponse)
+            .map(::oneToManyAsCensor)
     }*/
-    private fun listVerifier(userId: String) = database
+
+    /* private fun listVerifier(userId: String) = database
         .sequenceOf(Verifications)
         .filter{ it.userId eq userId }
         .map(mapper::asVerifier)
-
     private fun listTokens(userId: String) = database
         .sequenceOf(Tokens)
         .filter{ it.ownerId eq userId }
         .map(mapper::asToken)
-
     private fun listTokensContent(userId: String) =
         listTokens(userId)
             .map(TokenResponse::content)
+    private fun oneToManyAsCensor(user: UserCensorResponse) = with(user){
+        copy(tokens = listTokensContent(id))
+    }
+    private fun oneToManyAsComplete(user: User.Complete) = with(user){
+        copy(verifier = listVerifier(id), tokens = listTokens(id))
+    }*/
 }
