@@ -51,8 +51,8 @@ fun Route.listUsers(
     service: IUserService){
     get("/api/users/pagination") {
         val params = call.request.queryParameters
-        val page = params["page"]?.let(Integer::parseInt) ?: throw BadRequestException()
-        val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException()
+        val page = params["page"]?.let(Integer::parseInt) ?: throw BadRequestException("page")
+        val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException("size")
         val users = service.listUsers(page to size)
 
         call.respond(

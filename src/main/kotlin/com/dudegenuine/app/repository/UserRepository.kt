@@ -35,27 +35,31 @@ class UserRepository(
         .find{ it.id eq userId }
         .let(mapper::asUserCompleteResponseOrNull)
 
-    override fun postUser(userRequest: UserCreateRequest) = with(userRequest){
-        database.insert(Users){user ->
-            set(user.id, "USR-${UUID.randomUUID()}")
-            set(user.firstName, firstName)
-            set(user.lastName, lastName)
-            set(user.authId, authId)
-            set(user.profileId, profileId)
-            set(user.levelId, levelId)
-            set(user.createdAt, System.currentTimeMillis())
-            set(user.updatedAt, null)
-        }; Unit
+    override fun postUser(userRequest: UserCreateRequest) {
+        database.insert(Users) { user ->
+            userRequest.apply {
+                set(user.id, "USR-${UUID.randomUUID()}")
+                set(user.firstName, firstName)
+                set(user.lastName, lastName)
+                set(user.authId, authId)
+                set(user.profileId, profileId)
+                set(user.levelId, levelId)
+                set(user.createdAt, System.currentTimeMillis())
+                set(user.updatedAt, null)
+            }
+        }
     }
 
-    override fun putUser(userRequest: UserUpdateRequest) = with(userRequest){
+    override fun putUser(userRequest: UserUpdateRequest) {
         database.update(Users){user ->
-            set(user.firstName, firstName)
-            set(user.lastName, lastName)
-            set(user.createdAt, createdAt)
-            set(user.updatedAt, System.currentTimeMillis())
-            where{ user.id eq currentUserId }
-        }; Unit
+            userRequest.apply {
+                set(user.firstName, firstName)
+                set(user.lastName, lastName)
+                set(user.createdAt, createdAt)
+                set(user.updatedAt, System.currentTimeMillis())
+                where{ user.id eq currentUserId }
+            }
+        }
     }
 
     override fun deleteUser(userId: String) {

@@ -1,13 +1,7 @@
 package com.dudegenuine.di
 
-import com.dudegenuine.app.mapper.FileMapper
-import com.dudegenuine.app.mapper.IFileMapper
-import com.dudegenuine.app.mapper.IUserMapper
-import com.dudegenuine.app.mapper.UserMapper
-import com.dudegenuine.app.repository.FileRepository
-import com.dudegenuine.app.repository.IFileRepository
-import com.dudegenuine.app.repository.IUserRepository
-import com.dudegenuine.app.repository.UserRepository
+import com.dudegenuine.app.mapper.*
+import com.dudegenuine.app.repository.*
 import org.koin.dsl.module
 
 /**
@@ -16,6 +10,9 @@ import org.koin.dsl.module
  **/
 
 val repositoryModule = module {
+    single<IAuthRepository> {
+        AuthRepository(get(), get())
+    }
     single<IUserRepository> {
         UserRepository(get(), get())
     }
@@ -25,6 +22,7 @@ val repositoryModule = module {
 }
 
 val mapperModule = module {
+    single<IAuthMapper> { AuthMapper() }
     single<IUserMapper> { UserMapper() }
     single<IFileMapper> { FileMapper() }
 }

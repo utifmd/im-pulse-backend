@@ -1,9 +1,6 @@
 package com.dudegenuine.di
 
-import com.dudegenuine.app.service.FileService
-import com.dudegenuine.app.service.IFileService
-import com.dudegenuine.app.service.IUserService
-import com.dudegenuine.app.service.UserService
+import com.dudegenuine.app.service.*
 import org.koin.dsl.module
 
 /**
@@ -11,6 +8,9 @@ import org.koin.dsl.module
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 val serviceModule = module {
+    single<IAuthService> {
+        AuthService(get())
+    }
     single<IUserService> {
         UserService(get())
     }

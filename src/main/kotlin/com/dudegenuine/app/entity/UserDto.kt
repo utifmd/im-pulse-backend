@@ -3,7 +3,6 @@ package com.dudegenuine.app.entity
 import org.ktorm.entity.Entity
 import org.ktorm.schema.Table
 import org.ktorm.schema.long
-import org.ktorm.schema.timestamp
 import org.ktorm.schema.varchar
 
 /**
