@@ -1,34 +1,32 @@
 package com.dudegenuine.app.entity
 
-import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.long
-import org.ktorm.schema.varchar
+import com.dudegenuine.app.entity.LevelDto.Companion.optionalBackReferencedOn
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.ReferenceOption
+import java.util.UUID
 
 /**
  * Thu, 01 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-interface UserDto: Entity<UserDto> {
-    var id: String
-    var firstName: String
-    var lastName: String
-    var authDto: AuthDto?
-    var profileDto: ProfileDto?
-    var levelDto: LevelDto?
-    var verifier: List<VerifierDto>?
-    var tokens: List<TokenDto>?
-    var createdAt: Long
-    var updatedAt: Long?
-    companion object: Entity.Factory<UserDto>()
+object Users: UUIDTable("users"){
+    val firstName = varchar("first_name", 127)
+    val lastName = varchar("last_name", 127)
+    val createdAt = long("created_at")
+    val updatedAt = long("updated_at").nullable()
+
+    val authId = reference("auth_id", Auths, ReferenceOption.CASCADE) // as a parent
 }
-object Users: Table<UserDto>("users"){
-    val id = varchar("id").primaryKey().bindTo{ it.id }
-    val firstName = varchar("first_name").bindTo{ it.firstName }
-    val lastName = varchar("last_name").bindTo{ it.lastName }
-    val authId = varchar("authentication_id").references(Auths){ it.authDto }
-    val profileId = varchar("profile_id").references(Profiles){ it.profileDto }
-    val levelId = varchar("level_id").references(Levels){ it.levelDto }
-    val createdAt = long("created_at").bindTo{ it.createdAt }
-    val updatedAt = long("updated_at").bindTo{ it.updatedAt }
+class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
+    var firstName by Users.firstName
+    var lastName by Users.lastName
+    var createdAt by Users.createdAt
+    var updatedAt by Users.updatedAt
+
+    var authId by AuthDto referencedOn Users.authId
+    val level by LevelDto optionalReferrersOn Levels.userId //val level by LevelDto optionalBackReferencedOn Levels.userId
+    companion object: EntityClass<UUID, UserDto>(Users)
 }

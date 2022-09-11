@@ -1,29 +1,28 @@
 package com.dudegenuine.app.entity
 
-import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.long
-import org.ktorm.schema.varchar
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.UUIDTable
+import java.util.UUID
 
 /**
  * Sat, 03 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-interface ProfileDto: Entity<ProfileDto> {
-    var id: String
-    var about: String
-    var status: String
-    var region: String
-    var picture: ImageDto?
-    var updatedAt: Long?
-
-    companion object: Entity.Factory<ProfileDto>()
+object Profiles: UUIDTable("profiles"){
+    val about = varchar("about", 127)
+    val status = varchar("status", 36)
+    val region = varchar("region", 36)
+    val imageId = varchar("image_id", 127)
+    val updatedAt = long("updated_at")
 }
-object Profiles: Table<ProfileDto>("profiles"){
-    val id = varchar("id").primaryKey().bindTo { it.id }
-    val about = varchar("about").bindTo { it.about }
-    val status = varchar("status").bindTo { it.status }
-    val region = varchar("region").bindTo { it.region }
-    val imageId = varchar("image_id").references(Images){ it.picture }
-    val updatedAt = long("updated_at").bindTo { it.updatedAt }
+class ProfileDto(id: EntityID<UUID>): Entity<UUID>(id) {
+    var about by Profiles.about
+    var status by Profiles.status
+    var region by Profiles.region
+    var updatedAt by Profiles.updatedAt
+
+    val picture by ImageDto optionalReferrersOn Images.profileId
+    companion object: EntityClass<UUID, ProfileDto>(Profiles)
 }

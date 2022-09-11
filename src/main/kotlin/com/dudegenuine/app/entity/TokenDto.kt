@@ -1,23 +1,24 @@
 package com.dudegenuine.app.entity
 
-import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.varchar
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.IntIdTable
 
 /**
  * Mon, 05 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-interface TokenDto: Entity<TokenDto> {
-    val id: String
-    val content: String
-    val type: String
-    val ownerId: String
+object Tokens: IntIdTable("tokens") {
+    val tokenId = varchar("token_id", 127).uniqueIndex()
+    val content = varchar("content", 225)
+    val type = varchar("type", 36)
+    val ownerId = varchar("owner_id", 127)
 }
-
-object Tokens: Table<TokenDto>("tokens") {
-    val id = varchar("id").primaryKey().bindTo { it.id }
-    val content = varchar("content").bindTo { it.content }
-    val type = varchar("type").bindTo { it.type }
-    val ownerId = varchar("owner_id").bindTo { it.ownerId }
+class TokenDto(id: EntityID<Int>): Entity<Int>(id) {
+    val tokenId by Tokens.tokenId
+    val content by Tokens.content
+    val type by Tokens.type
+    val ownerId by Tokens.ownerId // must many to one
+    companion object: EntityClass<Int, TokenDto>(Tokens)
 }

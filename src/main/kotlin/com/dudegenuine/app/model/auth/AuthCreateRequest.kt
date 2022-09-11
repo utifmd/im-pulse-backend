@@ -8,10 +8,8 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class AuthCreateRequest(
-    val id: String,
     val email: String,
     val username: String,
     val password: String,
-    val lastPassword: String,
-    val updatedAt: String?
+    val lastPassword: String
 )

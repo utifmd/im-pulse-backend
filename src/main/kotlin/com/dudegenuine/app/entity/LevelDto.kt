@@ -1,23 +1,25 @@
 package com.dudegenuine.app.entity
 
-import org.ktorm.entity.Entity
-import org.ktorm.schema.Table
-import org.ktorm.schema.long
-import org.ktorm.schema.varchar
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.ReferenceOption
+import java.util.UUID
+
 
 /**
  * Mon, 05 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-interface LevelDto: Entity<LevelDto> {
-    var id: String
-    var status: String
-    var createdAt: Long?
-    companion object: Entity.Factory<LevelDto>()
+object Levels: UUIDTable("levels"){
+    val status = varchar("status", 38)
+    val createdAt = long("created_at")
+    val userId = reference("user_id", Users, ReferenceOption.CASCADE).nullable()
 }
-
-object Levels: Table<LevelDto>("levels"){
-    val id = varchar("id").primaryKey().bindTo { it.id }
-    val status = varchar("status").bindTo { it.status }
-    val createdAt = long("created_at").bindTo { it.createdAt }
+class LevelDto(id: EntityID<UUID>): Entity<UUID>(id) {
+    var status by Levels.status
+    var createdAt by Levels.createdAt
+    var userDto by UserDto optionalReferencedOn Levels.userId
+    companion object: EntityClass<UUID, LevelDto>(Levels)
 }

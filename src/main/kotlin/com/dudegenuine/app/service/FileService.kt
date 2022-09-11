@@ -1,6 +1,7 @@
 package com.dudegenuine.app.service
 
-import com.dudegenuine.app.repository.IFileRepository
+import com.dudegenuine.app.repository.contract.IFileRepository
+import com.dudegenuine.app.service.contract.IFileService
 import io.ktor.http.content.*
 
 /**
@@ -8,11 +9,12 @@ import io.ktor.http.content.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class FileService(
-    private val repository: IFileRepository): IFileService {
+    private val repository: IFileRepository
+): IFileService {
     override fun readFile(id: String) = repository.getFile(id)
     override fun deleteFile(id: String) = with(id) {
         apply(repository::getFile)
-        apply(repository::removeFile); Unit
+        apply(repository::deleteFile); Unit
     }
     override suspend fun uploadFile(filePartData: MultiPartData) = repository.postFile(filePartData)
 }

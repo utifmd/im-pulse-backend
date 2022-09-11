@@ -1,4 +1,4 @@
-package com.dudegenuine.app.mapper
+package com.dudegenuine.app.mapper.contract
 
 import com.dudegenuine.app.entity.ImageDto
 import com.dudegenuine.app.entity.LevelDto
@@ -13,7 +13,6 @@ import com.dudegenuine.app.model.token.TokenResponse
 import com.dudegenuine.app.model.user.UserCensorResponse
 import com.dudegenuine.app.model.user.UserCompleteResponse
 import com.dudegenuine.app.model.verifier.VerifierResponse
-import org.ktorm.dsl.QueryRowSet
 
 /**
  * Sat, 03 Sep 2022
@@ -23,7 +22,7 @@ interface IUserMapper {
     fun asUserCompleteResponse(dto: UserDto): UserCompleteResponse
     //fun asUserCompleteResponse(createRequest: UserCreateRequest): UserCompleteResponse
     fun asUserCensorResponse(dto: UserDto): UserCensorResponse
-    fun asDto(row: QueryRowSet): UserDto
+    //fun asDto(row: QueryRowSet): UserDto
     fun asUserCompleteResponseOrNull(dto: UserDto?): UserCompleteResponse?
     fun asUserCensorResponseOrNull(dto: UserDto?): UserCensorResponse?
     fun asAuth(dto: AuthDto): AuthResponse
@@ -31,5 +30,4 @@ interface IUserMapper {
     fun asVerifier(dto: VerifierDto): VerifierResponse
     fun asToken(dto: TokenDto): TokenResponse
     fun asImage(dto: ImageDto): Image
-    fun formattedDate(timestamp: Long): String
 }

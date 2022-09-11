@@ -1,4 +1,4 @@
-package com.dudegenuine.app.service
+package com.dudegenuine.app.service.contract
 
 import com.dudegenuine.app.model.file.File
 import io.ktor.http.content.*

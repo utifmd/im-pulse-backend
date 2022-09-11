@@ -1,10 +1,9 @@
 package com.dudegenuine.app.mapper
 
-import com.dudegenuine.app.entities.AuthDto
-import com.dudegenuine.app.entities.Auths
+import com.dudegenuine.app.entity.AuthDto
+import com.dudegenuine.app.mapper.contract.IAuthMapper
 import com.dudegenuine.app.model.auth.AuthResponse
 import com.dudegenuine.app.repository.common.Utils
-import org.jetbrains.exposed.sql.ResultRow
 
 /**
  * Fri, 09 Sep 2022

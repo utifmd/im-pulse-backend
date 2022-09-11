@@ -1,4 +1,4 @@
-package com.dudegenuine.app.repository
+package com.dudegenuine.app.repository.contract
 
 import com.dudegenuine.app.model.file.File
 import io.ktor.http.content.*
@@ -9,6 +9,6 @@ import io.ktor.http.content.*
  **/
 interface IFileRepository {
     fun getFile(id: String): File
-    fun removeFile(id: String)
+    fun deleteFile(id: String): String
     suspend fun postFile(file: MultiPartData): String
 }
