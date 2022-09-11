@@ -15,7 +15,7 @@ import io.ktor.server.routing.*
  **/
 fun Route.addImage(
     service: IImageService){
-    post("api/image") {
+    post("api/images") {
         val request: ImageCreateRequest = call.receive()
         val response = service.addImage(request)
 

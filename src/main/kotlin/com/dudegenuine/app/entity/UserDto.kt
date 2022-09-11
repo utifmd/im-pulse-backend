@@ -1,6 +1,5 @@
 package com.dudegenuine.app.entity
 
-import com.dudegenuine.app.entity.LevelDto.Companion.optionalBackReferencedOn
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -17,7 +16,6 @@ object Users: UUIDTable("users"){
     val lastName = varchar("last_name", 127)
     val createdAt = long("created_at")
     val updatedAt = long("updated_at").nullable()
-
     val authId = reference("auth_id", Auths, ReferenceOption.CASCADE) // as a parent
 }
 class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
@@ -26,7 +24,11 @@ class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var createdAt by Users.createdAt
     var updatedAt by Users.updatedAt
 
-    var authId by AuthDto referencedOn Users.authId
-    val level by LevelDto optionalReferrersOn Levels.userId //val level by LevelDto optionalBackReferencedOn Levels.userId
+    /* this class as parent */
+    val profileDto by ProfileDto optionalBackReferencedOn Profiles.userId
+    val levelDto by LevelDto optionalBackReferencedOn Levels.userId
+
+    /* this class as child */
+    var authDto by AuthDto referencedOn Users.authId
     companion object: EntityClass<UUID, UserDto>(Users)
 }

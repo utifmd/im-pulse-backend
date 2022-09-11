@@ -25,7 +25,7 @@ class UserMapper: IUserMapper {
             profileStatus = null, //profileDto?.status?.ifBlank{ null },
             region = null, //profileDto?.region?.ifBlank{ null },
             profilePicture = null,//profileDto?.picture?.let(::asImage),
-            authResponse = authId.let(::asAuth),
+            authResponse = authDto.let(::asAuth),
             level = null, //levelDto?.status,
             verifierResponse = emptyList(), //verifier?.map(::asVerifier) ?: emptyList(),
             tokenResponses = emptyList(), //tokens?. map(::asToken) ?: emptyList(),
@@ -33,74 +33,21 @@ class UserMapper: IUserMapper {
             updatedAt = updatedAt?.let(Utils::formattedDate)
         )
     }
-    /*override fun asUserCompleteResponse(
-        createRequest: UserCreateRequest) = with(createRequest){
-        UserCompleteResponse(
-            id = id,
-            firstName = firstName,
-            lastName = lastName,
-            about = about,
-            profileStatus = profileStatus,
-            profilePicture = profilePicture,
-            region = region,
-            auth = auth,
-            level = level,
-            verifier = verifier,
-            tokens = tokens,
-            createdAt = createdAt,
-            updatedAt = updatedAt
-        )
-    }*/
     override fun asUserCensorResponse(dto: UserDto) = with(dto){
         UserCensorResponse(
             id = id.value.toString(),
             firstName = firstName,
             lastName = lastName,
-            email = authId.email,
-            username = authId.username,
-            profilePictureUrl = null, //profileDto?.picture?.url,
-            region = null, //profileDto?.region,
-            level = level?.status,//level.joinToString { it.status }, //levelDto?.status,
-            tokens = emptyList(), //tokens?.map(TokenDto::content) ?: emptyList(),
+            email = authDto.email,
+            username = authDto.username,
+            profilePictureUrl = profileDto?.pictureDto?.url,
+            region = profileDto?.region,
+            level = levelDto?.status,
+            status = profileDto?.status,
+            tokens = emptyList(),
             createdAt = createdAt.let(Utils::formattedDate),
         )
     }
-    /*override fun asDto(row: QueryRowSet) = UserDto().apply {
-        val mAuth = AuthDto().apply {
-            id = row[Auths.id] ?: EMPTY_STRING
-            email = row[Auths.email] ?: EMPTY_STRING
-            username = row[Auths.username] ?: EMPTY_STRING
-            password = row[Auths.password] ?: EMPTY_STRING
-            lastPassword = row[Auths.lastPassword] ?: EMPTY_STRING
-            updatedAt = row[Auths.updatedAt] ?: System.currentTimeMillis()
-        }
-        val mPicture = ImageDto().apply {
-            id = row[Images.id] ?: EMPTY_STRING
-            url = row[Images.url] ?: EMPTY_STRING
-            updatedAt = row[Images.updatedAt]
-        }
-        val mProfile = ProfileDto().apply {
-            id = row[Profiles.id] ?: EMPTY_STRING
-            about = row[Profiles.about] ?: EMPTY_STRING
-            status = row[Profiles.status] ?: EMPTY_STRING
-            region = row[Profiles.region] ?: EMPTY_STRING
-            picture = mPicture
-            updatedAt = row[Profiles.updatedAt]
-        }
-        val mLevel = LevelDto().apply {
-            id = row[Levels.id] ?: EMPTY_STRING
-            status = row[Levels.status] ?: EMPTY_STRING
-            createdAt = row[Levels.createdAt]
-        }
-        id = row[Users.id] ?: EMPTY_STRING
-        firstName = row[Users.firstName] ?: EMPTY_STRING
-        lastName = row[Users.lastName] ?: EMPTY_STRING *//*authDto = getObject("authentication", AuthDto::class.java) profileDto = getObject("profile", ProfileDto::class.java) levelDto = getObject("level", LevelDto::class.java)*//*
-        createdAt = row[Users.createdAt] ?: System.currentTimeMillis()
-        updatedAt = row[Users.updatedAt]
-        authDto = mAuth
-        profileDto = mProfile
-        levelDto = mLevel
-    }*/
     override fun asUserCompleteResponseOrNull(dto: UserDto?) = dto
         ?.let(::asUserCompleteResponse)
 

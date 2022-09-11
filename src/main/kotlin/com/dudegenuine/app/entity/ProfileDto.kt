@@ -4,6 +4,7 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.ReferenceOption
 import java.util.UUID
 
 /**
@@ -12,10 +13,10 @@ import java.util.UUID
  **/
 object Profiles: UUIDTable("profiles"){
     val about = varchar("about", 127)
-    val status = varchar("status", 36)
-    val region = varchar("region", 36)
-    val imageId = varchar("image_id", 127)
-    val updatedAt = long("updated_at")
+    val status = varchar("status", 38)
+    val region = varchar("region", 38)
+    val updatedAt = long("updated_at").nullable()
+    val userId = reference("user_id", Users, ReferenceOption.CASCADE).nullable()
 }
 class ProfileDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var about by Profiles.about
@@ -23,6 +24,10 @@ class ProfileDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var region by Profiles.region
     var updatedAt by Profiles.updatedAt
 
-    val picture by ImageDto optionalReferrersOn Images.profileId
+    /* as parent */
+    val pictureDto by ImageDto optionalBackReferencedOn Images.profileId //val userDto by UserDto referrersOn Profiles.userId
+
+    /* as child */
+    var userDto by UserDto optionalReferencedOn Profiles.userId
     companion object: EntityClass<UUID, ProfileDto>(Profiles)
 }

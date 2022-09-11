@@ -42,8 +42,7 @@ fun Route.addAuth(
     }
 }
 fun Route.patchAuth(
-    service: IAuthService
-){
+    service: IAuthService){
     put("api/auths") {
         val request: AuthUpdateRequest = call.receive()
         val auth = service.updateAuth(request)

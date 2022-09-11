@@ -1,10 +1,7 @@
 package com.dudegenuine.di
 
 import com.dudegenuine.app.service.*
-import com.dudegenuine.app.service.contract.IAuthService
-import com.dudegenuine.app.service.contract.IFileService
-import com.dudegenuine.app.service.contract.ILevelService
-import com.dudegenuine.app.service.contract.IUserService
+import com.dudegenuine.app.service.contract.*
 import org.koin.dsl.module
 
 /**
@@ -18,10 +15,16 @@ val serviceModule = module {
     single<IUserService> {
         UserService(get())
     }
+    single<IProfileService> {
+        ProfileService(get())
+    }
     single<IFileService> {
         FileService(get())
     }
     single<ILevelService> {
         LevelService(get())
+    }
+    single<IImageService> {
+        ImageService(get())
     }
 }

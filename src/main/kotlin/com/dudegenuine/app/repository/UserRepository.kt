@@ -25,7 +25,7 @@ class UserRepository(
         val users = UserDto.new {
             firstName = mFirstName
             lastName = mLastName
-            authId = AuthDto[UUID.fromString(mAuthId)]
+            authDto = AuthDto[UUID.fromString(mAuthId)]
             createdAt = System.currentTimeMillis()
             updatedAt = null
         }

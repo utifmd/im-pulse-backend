@@ -25,6 +25,7 @@ class ImageRepository(
         val dto = ImageDto.new {
             url = request.url
             profileDto = ProfileDto[UUID.fromString(request.profileId)]
+            updatedAt = null
         }
         dto.let (mapper::asResponse)
     }

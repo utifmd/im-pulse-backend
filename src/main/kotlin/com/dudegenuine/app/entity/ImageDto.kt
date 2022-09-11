@@ -14,9 +14,8 @@ import java.util.UUID
  **/
 object Images: UUIDTable("images"){
     val url = varchar("url", 225)
-    val updatedAt = long("updated_at")
-
     val profileId = reference("profile_id", Profiles, ReferenceOption.CASCADE).nullable()
+    val updatedAt = long("updated_at").nullable()
 }
 class ImageDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var url by Images.url

@@ -16,6 +16,7 @@ data class UserCensorResponse(
     val profilePictureUrl: String?,
     val region: String?,
     val level: String?,
+    val status: String?,
     val tokens: List<String>,
     val createdAt: String,
 )

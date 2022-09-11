@@ -9,6 +9,7 @@ import org.koin.ktor.ext.inject
 fun Application.configureRouting() {
     val authService: IAuthService by inject()
     val userService: IUserService by inject()
+    val profileService: IProfileService by inject()
     val fileService: IFileService by inject()
     val levelService: ILevelService by inject()
     val imageService: IImageService by inject()
@@ -28,6 +29,10 @@ fun Application.configureRouting() {
             apply(::removeUser)
             apply(::listUsers)
         }
+        with(profileService){
+            apply(::addProfile)
+            apply(::patchProfile)
+        }
         with(fileService){
             apply(::addFile)
             apply(::findFile)
@@ -37,9 +42,7 @@ fun Application.configureRouting() {
             apply(::addLevel)
             apply(::findLevel)
         }
-        with(imageService){
-            apply(::addImage)
-        }
+        imageService.apply(::addImage)
         configureExceptionRoutes()
     }
 }

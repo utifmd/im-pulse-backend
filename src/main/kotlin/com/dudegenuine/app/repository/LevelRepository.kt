@@ -3,11 +3,13 @@ package com.dudegenuine.app.repository
 import com.dudegenuine.app.entity.LevelDto
 import com.dudegenuine.app.entity.Levels
 import com.dudegenuine.app.entity.UserDto
+import com.dudegenuine.app.entity.Users
 import com.dudegenuine.app.mapper.contract.ILevelMapper
 import com.dudegenuine.app.model.level.LevelCreateRequest
 import com.dudegenuine.app.repository.contract.ILevelRepository
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.NotFoundException
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
