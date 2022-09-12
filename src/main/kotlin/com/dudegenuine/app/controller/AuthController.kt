@@ -54,8 +54,7 @@ fun Route.patchAuth(
     }
 }
 fun Route.isUsernameExist(
-    service: IAuthService
-){
+    service: IAuthService){
     get("api/auths/is-username-exist/{username}") {
         val username = call.parameters["username"] ?: throw BadRequestException()
         val data = service.isUsernameExist(username)

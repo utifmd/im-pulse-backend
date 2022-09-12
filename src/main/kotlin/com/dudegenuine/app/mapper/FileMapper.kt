@@ -10,7 +10,7 @@ import com.dudegenuine.app.model.file.File
  **/
 class FileMapper: IFileMapper {
     override fun asFile(dto: FileDto) = with(dto){
-        File(fileId, type, data)
+        File(type, data)
     }
     override fun asFileOrNull(dto: FileDto?) = dto?.let(::asFile)
 }

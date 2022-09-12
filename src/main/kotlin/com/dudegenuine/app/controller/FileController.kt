@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.lang.IllegalStateException
 
 /**
  * Wed, 07 Sep 2022
@@ -15,8 +16,11 @@ import io.ktor.server.routing.*
  **/
 fun Route.addFile(
     service: IFileService){
+
     post("api/files") {
-        val fileMultipartData = call.receiveMultipart()
+        val fileMultipartData = try{ call.receiveMultipart() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         val fileId = service.uploadFile(fileMultipartData)
 
         call.respond(
@@ -26,13 +30,13 @@ fun Route.addFile(
     }
 }
 fun Route.findFile(
-    service: IFileService
-){
+    service: IFileService){
+
     get("api/files/{fileId}") {
         val fileId = call.parameters["fileId"] ?: throw BadRequestException()
-        val file = service.readFile(fileId)
+        val response = service.readFile(fileId)
 
-        val fileType = when(file.type){
+        val fileType = when(response.type){
             ContentType.Image.PNG.contentType -> ContentType.Image.PNG
             ContentType.Image.GIF.contentType -> ContentType.Image.GIF
             else -> ContentType.Image.JPEG
@@ -40,20 +44,20 @@ fun Route.findFile(
         call.respondBytes(
             status = HttpStatusCode.OK,
             contentType = fileType,
-            bytes = file.data,
+            bytes = response.data,
         )
     }
 }
 fun Route.removeFile(
-    service: IFileService
-){
+    service: IFileService){
+
     delete("api/files/{fileId}") {
         val fileId = call.parameters["fileId"] ?: throw BadRequestException()
-        service.deleteFile(fileId)
+        val response = service.deleteFile(fileId)
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(fileId)
+            message = WebResponse(response)
         )
     }
 }
