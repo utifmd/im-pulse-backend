@@ -27,4 +27,7 @@ val serviceModule = module {
     single<IImageService> {
         ImageService(get())
     }
+    single<ITokenService> {
+        TokenService(get())
+    }
 }

@@ -16,7 +16,7 @@ object Users: UUIDTable("users"){
     val lastName = varchar("last_name", 127)
     val createdAt = long("created_at")
     val updatedAt = long("updated_at").nullable()
-    val authId = reference("auth_id", Auths, ReferenceOption.CASCADE) // as a parent
+    val authId = reference("auth_id", Auths, ReferenceOption.CASCADE)
 }
 class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var firstName by Users.firstName
@@ -27,6 +27,7 @@ class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
     /* this class as parent */
     val profileDto by ProfileDto optionalBackReferencedOn Profiles.userId
     val levelDto by LevelDto optionalBackReferencedOn Levels.userId
+    val tokens by TokenDto referrersOn Tokens.userId //val tokenDto by TokenDto via Tokens
 
     /* this class as child */
     var authDto by AuthDto referencedOn Users.authId

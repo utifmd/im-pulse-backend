@@ -5,6 +5,7 @@ import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.user.*
 import com.dudegenuine.app.repository.contract.IUserRepository
 import com.dudegenuine.app.repository.validation.NotFoundException
+import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction

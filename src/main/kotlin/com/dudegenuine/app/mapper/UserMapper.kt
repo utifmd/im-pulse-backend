@@ -44,7 +44,7 @@ class UserMapper: IUserMapper {
             region = profileDto?.region,
             level = levelDto?.status,
             status = profileDto?.status,
-            tokens = emptyList(),
+            tokens = tokens.map(TokenDto::content), /*.limit()*/
             createdAt = createdAt.let(Utils::formattedDate),
         )
     }
@@ -56,6 +56,7 @@ class UserMapper: IUserMapper {
 
     override fun asAuth(dto: AuthDto) = with(dto){
         AuthResponse(
+            authId = id.value.toString(),
             email = email,
             username = username,
             password = password,

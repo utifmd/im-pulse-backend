@@ -30,6 +30,9 @@ val repositoryModule = module {
     single<IImageRepository> {
         ImageRepository(get(), get())
     }
+    single<ITokenRepository> {
+        TokenRepository(get(), get())
+    }
 }
 
 val mapperModule = module {
@@ -39,4 +42,5 @@ val mapperModule = module {
     single<IFileMapper> { FileMapper() }
     single<ILevelMapper> { LevelMapper() }
     single<IImageMapper> { ImageMapper() }
+    single<ITokenMapper> { TokenMapper() }
 }

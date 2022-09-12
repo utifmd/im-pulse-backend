@@ -13,6 +13,7 @@ fun Application.configureRouting() {
     val fileService: IFileService by inject()
     val levelService: ILevelService by inject()
     val imageService: IImageService by inject()
+    val tokenService: ITokenService by inject()
 
     install(Routing){
         with(authService){
@@ -41,6 +42,10 @@ fun Application.configureRouting() {
         with(levelService){
             apply(::addLevel)
             apply(::findLevel)
+        }
+        with(tokenService){
+            apply(this@install::addToken)
+            apply(this@install::removeToken)
         }
         imageService.apply(::addImage)
         configureExceptionRoutes()
