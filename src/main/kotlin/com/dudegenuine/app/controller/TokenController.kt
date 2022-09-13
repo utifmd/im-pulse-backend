@@ -17,7 +17,9 @@ import io.ktor.server.routing.*
 fun Route.addToken(
     service: ITokenService){
     post("api/tokens"){
-        val request: TokenRequest = call.receive()
+        val request: TokenRequest = try { call.receive() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         val response = service.addToken(request)
 
         call.respond(

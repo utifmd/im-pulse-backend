@@ -18,7 +18,9 @@ fun Route.addLevel(
     service: ILevelService
 ){
     post("api/levels") {
-        val request: LevelCreateRequest = call.receive()
+        val request: LevelCreateRequest = try { call.receive() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         val resp = service.addLevel(request)
 
         call.respond(

@@ -1,5 +1,6 @@
 package com.dudegenuine
 
+import com.dudegenuine.app.model.security.AuthTokenConfig
 import io.ktor.server.application.*
 import com.dudegenuine.plugins.*
 
@@ -18,4 +19,5 @@ fun Application.module() {
 }
 /*
 * TODO
+*  1. web socket chat
 * */

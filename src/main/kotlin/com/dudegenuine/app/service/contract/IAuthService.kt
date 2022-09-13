@@ -1,6 +1,7 @@
 package com.dudegenuine.app.service.contract
 
-import com.dudegenuine.app.model.auth.AuthCreateRequest
+import com.dudegenuine.app.model.auth.AuthRegisterRequest
+import com.dudegenuine.app.model.auth.AuthLoginRequest
 import com.dudegenuine.app.model.auth.AuthResponse
 import com.dudegenuine.app.model.auth.AuthUpdateRequest
 
@@ -10,7 +11,8 @@ import com.dudegenuine.app.model.auth.AuthUpdateRequest
  **/
 interface IAuthService {
     fun findAuth(authId: String): AuthResponse
-    fun createAuth(request: AuthCreateRequest): AuthResponse
+    fun onSignIn(request: AuthLoginRequest): String
+    fun onSignUp(request: AuthRegisterRequest)
     fun deleteAuth(authId: String): String
     fun updateAuth(request: AuthUpdateRequest): AuthResponse
     fun listAuths(pageAndSize: Pair<Long, Int>): List<AuthResponse>

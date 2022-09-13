@@ -15,6 +15,7 @@ object Auths: UUIDTable("auths"){
     val username = varchar("username", 127)
     val password = varchar("password", 127)
     val lastPassword = varchar("last_password", 127)
+    val salt = varchar("salt", 127)
     val updatedAt = long("updated_at").nullable()
 }
 class AuthDto(id: EntityID<UUID>): Entity<UUID>(id) {
@@ -22,6 +23,7 @@ class AuthDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var username by Auths.username
     var password by Auths.password
     var lastPassword by Auths.lastPassword
+    var salt by Auths.salt
     var updatedAt: Long? by Auths.updatedAt
     companion object: EntityClass<UUID, AuthDto>(Auths) //val users by UserDto optionalReferrersOn Users.authId
 }

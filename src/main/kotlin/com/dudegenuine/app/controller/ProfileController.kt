@@ -18,7 +18,9 @@ import io.ktor.server.routing.*
 fun Route.addProfile(
     service: IProfileService){
     post("api/profiles") {
-        val request: ProfileCreateRequest = call.receive()
+        val request: ProfileCreateRequest = try { call.receive() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         val response = service.addProfile(request)
 
         call.respond(
@@ -29,7 +31,9 @@ fun Route.addProfile(
 }
 fun Route.patchProfile(service: IProfileService){
     put("api/profiles") {
-        val request: ProfileUpdateRequest = call.receive()
+        val request: ProfileUpdateRequest = try { call.receive() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         val response = service.patchProfile(request)
 
         call.respond(

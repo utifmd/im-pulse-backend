@@ -17,12 +17,15 @@ fun Application.configureRouting() {
 
     install(Routing){
         with(authService){
-            apply(::addAuth)
+            apply(::signIn)
+            apply(::signUp)
             apply(::findAuth)
             apply(::patchAuth)
             apply(::listAuths)
             apply(::removeAuth)
             apply(::isUsernameExist)
+            findSecretInfo()
+            authenticate()
         }
         with(userService){
             apply(::addUser)
@@ -47,6 +50,7 @@ fun Application.configureRouting() {
             apply(this@install::addToken)
             apply(this@install::removeToken)
         }
+
         imageService.apply(::addImage)
         configureExceptionRoutes()
     }

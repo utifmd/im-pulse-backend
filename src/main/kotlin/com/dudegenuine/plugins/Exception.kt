@@ -4,6 +4,7 @@ import com.dudegenuine.app.model.ExceptionResponse
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
+import com.dudegenuine.app.repository.validation.UnAuthorizationException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.statuspages.*
@@ -35,6 +36,13 @@ fun Application.configureException(){
                     HttpStatusCode.BadRequest,
                     ExceptionResponse(
                         code = HttpStatusCode.BadRequest.value,
+                        message = cause.localizedMessage
+                    )
+                )
+                is UnAuthorizationException -> call.respond(
+                    HttpStatusCode.Unauthorized,
+                    ExceptionResponse(
+                        code = HttpStatusCode.Unauthorized.value,
                         message = cause.localizedMessage
                     )
                 )

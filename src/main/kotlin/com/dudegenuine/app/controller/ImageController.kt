@@ -2,6 +2,7 @@ package com.dudegenuine.app.controller
 
 import com.dudegenuine.app.model.WebResponse
 import com.dudegenuine.app.model.image.ImageCreateRequest
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IImageService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -16,7 +17,9 @@ import io.ktor.server.routing.*
 fun Route.addImage(
     service: IImageService){
     post("api/images") {
-        val request: ImageCreateRequest = call.receive()
+        val request: ImageCreateRequest = try { call.receive() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         val response = service.addImage(request)
 
         call.respond(

@@ -3,6 +3,7 @@ package com.dudegenuine.app.controller
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
+import com.dudegenuine.app.repository.validation.UnAuthorizationException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -27,6 +28,9 @@ fun Route.configureThrowableRoutes(){
     }
     get("/already-exist"){
         throw AlreadyExistException()
+    }
+    get("/authorization-failed"){
+        throw UnAuthorizationException()
     }
 }
 

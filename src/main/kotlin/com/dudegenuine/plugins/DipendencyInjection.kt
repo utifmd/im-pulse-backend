@@ -1,9 +1,6 @@
 package com.dudegenuine.plugins
 
-import com.dudegenuine.di.appModule
-import com.dudegenuine.di.mapperModule
-import com.dudegenuine.di.repositoryModule
-import com.dudegenuine.di.serviceModule
+import com.dudegenuine.di.*
 import io.ktor.server.application.*
 import org.koin.fileProperties
 import org.koin.ktor.plugin.Koin
@@ -20,5 +17,6 @@ fun Application.configureDependencyInjection(){
         modules(mapperModule)
         modules(repositoryModule)
         modules(serviceModule)
+        modules(dependencyModule)
     }
 }

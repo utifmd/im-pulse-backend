@@ -4,6 +4,11 @@ import com.dudegenuine.app.mapper.*
 import com.dudegenuine.app.mapper.contract.*
 import com.dudegenuine.app.repository.*
 import com.dudegenuine.app.repository.contract.*
+import com.dudegenuine.app.repository.dependency.HashDependency
+import com.dudegenuine.app.repository.dependency.IHashDependency
+import com.dudegenuine.app.repository.dependency.ITokenDependency
+import com.dudegenuine.app.repository.dependency.TokenDependency
+import com.typesafe.config.ConfigFactory
 import org.koin.dsl.module
 
 /**
@@ -12,8 +17,9 @@ import org.koin.dsl.module
  **/
 
 val repositoryModule = module {
+
     single<IAuthRepository> {
-        AuthRepository(get(), get())
+        AuthRepository(get(), get(), get(), get(), get())
     }
     single<IUserRepository> {
         UserRepository(get(), get())
@@ -43,4 +49,13 @@ val mapperModule = module {
     single<ILevelMapper> { LevelMapper() }
     single<IImageMapper> { ImageMapper() }
     single<ITokenMapper> { TokenMapper() }
+}
+
+val dependencyModule = module {
+    single<IHashDependency> {
+        HashDependency()
+    }
+    single<ITokenDependency> {
+        TokenDependency()
+    }
 }

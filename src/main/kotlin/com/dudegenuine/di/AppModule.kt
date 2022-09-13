@@ -1,5 +1,7 @@
 package com.dudegenuine.di
 
+import com.dudegenuine.app.model.security.AuthTokenConfig
+import com.typesafe.config.ConfigFactory
 import org.jetbrains.exposed.sql.Database
 import org.koin.dsl.module
 /**
@@ -15,19 +17,13 @@ val appModule = module {
 
         Database.connect(url, user = user, password = password)
     }
-}
-/*
-
-interface IDatabase{
-    fun connect(): Database
-}
-
-class Database(
-    private val urlUsrPwd: Triple<String, String, String>): IDatabase {
-    override fun connect(): Database {
-        val (url, user, password) = urlUsrPwd
-
-        return Database.connect(url, user = user, password = password)
+    single{
+        val config = ConfigFactory.load()
+        AuthTokenConfig(
+            audience = config.getString("jwt.audience"),
+            issuer = config.getString("jwt.issuer"),
+            expiresIn = 365L * 1000L * 60L * 60L * 24L,
+            secret = getProperty("JWT_SECRET") as String
+        )
     }
-
-}*/
+}

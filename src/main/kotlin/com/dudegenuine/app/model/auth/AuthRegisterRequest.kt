@@ -7,9 +7,8 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class AuthCreateRequest(
+data class AuthRegisterRequest(
     val email: String,
     val username: String,
-    val password: String,
-    val lastPassword: String
+    val password: String
 )
