@@ -16,5 +16,7 @@ interface IAuthRepository {
     fun updateAuth(request: AuthUpdateRequest): AuthResponse
     fun deleteAuth(authId: String): String
     fun readAuths(pageAndSize: Pair<Long, Int>): List<AuthResponse>
-    fun isUsernameExist(text: String): Boolean
+    companion object{
+        const val PASSWORD_MISMATCH = "password mismatch."
+    }
 }

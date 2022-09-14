@@ -1,9 +1,9 @@
 package com.dudegenuine.app.controller
 
 import com.dudegenuine.app.model.WebResponse
-import com.dudegenuine.app.model.level.LevelCreateRequest
+import com.dudegenuine.app.model.role.RoleCreateRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
-import com.dudegenuine.app.service.contract.ILevelService
+import com.dudegenuine.app.service.contract.IRoleService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -14,14 +14,13 @@ import io.ktor.server.routing.*
  * Sun, 11 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-fun Route.addLevel(
-    service: ILevelService
-){
-    post("api/levels") {
-        val request: LevelCreateRequest = try { call.receive() } catch (e: Exception){
+fun Route.addRole(
+    service: IRoleService){
+    post("api/roles") {
+        val request: RoleCreateRequest = try { call.receive() } catch (e: Exception){
             throw BadRequestException(e.localizedMessage)
         }
-        val resp = service.addLevel(request)
+        val resp = service.addRole(request)
 
         call.respond(
             status = HttpStatusCode.Created,
@@ -29,12 +28,11 @@ fun Route.addLevel(
         )
     }
 }
-fun Route.findLevel(
-    service: ILevelService
-){
-    get("api/levels/{levelId}"){
-        val levelId = call.parameters["levelId"] ?: throw BadRequestException()
-        val resp = service.findLevel(levelId)
+fun Route.findRole(
+    service: IRoleService){
+    get("api/roles/{roleId}"){
+        val levelId = call.parameters["roleId"] ?: throw BadRequestException()
+        val resp = service.findRole(levelId)
 
         call.respond(
             status = HttpStatusCode.OK,

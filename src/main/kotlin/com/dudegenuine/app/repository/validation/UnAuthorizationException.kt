@@ -5,5 +5,5 @@ package com.dudegenuine.app.repository.validation
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class UnAuthorizationException(message: String? = null): Exception(
-    message?.let{ "Authorization of $it was failed." } ?: "Authorization failed."
+    message?.let{ "Authorization failed: $it" } ?: "Authorization failed."
 )

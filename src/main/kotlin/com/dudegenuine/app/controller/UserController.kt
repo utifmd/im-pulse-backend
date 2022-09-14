@@ -15,8 +15,7 @@ import io.ktor.server.routing.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 fun Route.addUser(
-    service: IUserService
-){
+    service: IUserService){
     post("/api/users"){
         val user: UserCreateRequest = try { call.receive() } catch (e: Exception){
             throw BadRequestException(e.localizedMessage)
@@ -29,8 +28,7 @@ fun Route.addUser(
     }
 }
 fun Route.findUser(
-    service: IUserService
-){
+    service: IUserService){
     get("/api/users/{userId}"){
         val userId = call.parameters["userId"] ?: throw BadRequestException("userId")
         val user = service.findUser(userId)
@@ -41,8 +39,7 @@ fun Route.findUser(
     }
 }
 fun Route.removeUser(
-    service: IUserService
-){
+    service: IUserService){
     delete("/api/users/{userId}") {
         val userId = call.parameters["userId"] ?: throw BadRequestException("userId")
         service.removeUser(userId)
@@ -53,8 +50,7 @@ fun Route.removeUser(
     }
 }
 fun Route.listUsers(
-    service: IUserService
-){
+    service: IUserService){
     get("/api/users") {
         val params = call.request.queryParameters
         val page = params["page"]?.let(Integer::parseInt)?.toLong() ?: throw BadRequestException("page")

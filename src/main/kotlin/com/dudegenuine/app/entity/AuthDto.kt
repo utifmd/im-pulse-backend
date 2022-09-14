@@ -11,16 +11,14 @@ import java.util.UUID
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 object Auths: UUIDTable("auths"){
-    val email = varchar("email", 127)
-    val username = varchar("username", 127)
+    val emailOrUsername = varchar("email_or_username", 127)
     val password = varchar("password", 127)
     val lastPassword = varchar("last_password", 127)
     val salt = varchar("salt", 127)
     val updatedAt = long("updated_at").nullable()
 }
 class AuthDto(id: EntityID<UUID>): Entity<UUID>(id) {
-    var email by Auths.email
-    var username by Auths.username
+    var emailOrUsername by Auths.emailOrUsername
     var password by Auths.password
     var lastPassword by Auths.lastPassword
     var salt by Auths.salt

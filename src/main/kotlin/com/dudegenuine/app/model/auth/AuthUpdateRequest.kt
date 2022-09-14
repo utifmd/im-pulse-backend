@@ -6,8 +6,7 @@ package com.dudegenuine.app.model.auth
  **/
 data class AuthUpdateRequest(
     val currentAuthId: String,
-    val email: String,
-    val username: String,
+    val emailOrUsername: String,
     val password: String,
     val lastPassword: String
 )

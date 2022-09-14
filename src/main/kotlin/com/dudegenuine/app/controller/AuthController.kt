@@ -43,9 +43,9 @@ fun Route.signIn(
         )
     }
 }
-fun Route.findSecretInfo(){
+fun Route.claimAuthId(){
     authenticate {
-        get("api/auth/secret-info"){
+        get("api/auth/claim-id"){
             val userId = try {
                 call.principal<JWTPrincipal>()?.getClaim("userId", String::class)
             } catch (e: Exception){
@@ -69,8 +69,9 @@ fun Route.findAuth(
     service: IAuthService){
     get("api/auth/{authId}") {
         val authId = call.parameters["authId"] ?: throw BadRequestException()
-        val auth = service.findAuth(authId)
-
+        val auth = try { service.findAuth(authId) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
         call.respond(
             status = HttpStatusCode.OK,
             message = WebResponse(auth)

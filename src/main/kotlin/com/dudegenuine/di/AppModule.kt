@@ -14,7 +14,6 @@ val appModule = module {
         val url = getProperty("BASE_URL") as String
         val user = getProperty("USERNAME") as String
         val password = getProperty("PASSWORD") as String
-
         Database.connect(url, user = user, password = password)
     }
     single{

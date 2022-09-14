@@ -11,9 +11,10 @@ fun Application.configureRouting() {
     val userService: IUserService by inject()
     val profileService: IProfileService by inject()
     val fileService: IFileService by inject()
-    val levelService: ILevelService by inject()
+    val levelService: IRoleService by inject()
     val imageService: IImageService by inject()
-    val tokenService: ITokenService by inject()
+    val deviceService: IDeviceService by inject()
+    val contactService: IContactService by inject()
 
     install(Routing){
         with(authService){
@@ -24,8 +25,12 @@ fun Application.configureRouting() {
             apply(::listAuths)
             apply(::removeAuth)
             apply(::isUsernameExist)
-            findSecretInfo()
             authenticate()
+            claimAuthId()
+        }
+        with(contactService){
+            apply(::addContact)
+            apply(::putContact)
         }
         with(userService){
             apply(::addUser)
@@ -43,12 +48,12 @@ fun Application.configureRouting() {
             apply(::removeFile)
         }
         with(levelService){
-            apply(::addLevel)
-            apply(::findLevel)
+            apply(::addRole)
+            apply(::findRole)
         }
-        with(tokenService){
-            apply(this@install::addToken)
-            apply(this@install::removeToken)
+        with(deviceService){
+            apply(::addDevice)
+            apply(::removeDevice)
         }
 
         imageService.apply(::addImage)

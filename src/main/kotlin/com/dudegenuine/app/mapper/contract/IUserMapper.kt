@@ -1,15 +1,15 @@
 package com.dudegenuine.app.mapper.contract
 
 import com.dudegenuine.app.entity.ImageDto
-import com.dudegenuine.app.entity.LevelDto
-import com.dudegenuine.app.entity.TokenDto
+import com.dudegenuine.app.entity.RoleDto
+import com.dudegenuine.app.entity.DeviceDto
 import com.dudegenuine.app.entity.AuthDto
 import com.dudegenuine.app.entity.UserDto
 import com.dudegenuine.app.entity.VerifierDto
 import com.dudegenuine.app.model.auth.AuthResponse
 import com.dudegenuine.app.model.file.Image
-import com.dudegenuine.app.model.level.LevelResponse
-import com.dudegenuine.app.model.token.TokenResponse
+import com.dudegenuine.app.model.role.RoleResponse
+import com.dudegenuine.app.model.device.DeviceResponse
 import com.dudegenuine.app.model.user.UserCensorResponse
 import com.dudegenuine.app.model.user.UserCompleteResponse
 import com.dudegenuine.app.model.verifier.VerifierResponse
@@ -26,8 +26,8 @@ interface IUserMapper {
     fun asUserCompleteResponseOrNull(dto: UserDto?): UserCompleteResponse?
     fun asUserCensorResponseOrNull(dto: UserDto?): UserCensorResponse?
     fun asAuth(dto: AuthDto): AuthResponse
-    fun asLevel(dto: LevelDto): LevelResponse
+    fun asLevel(dto: RoleDto): RoleResponse
     fun asVerifier(dto: VerifierDto): VerifierResponse
-    fun asToken(dto: TokenDto): TokenResponse
+    fun asToken(dto: DeviceDto): DeviceResponse
     fun asImage(dto: ImageDto): Image
 }

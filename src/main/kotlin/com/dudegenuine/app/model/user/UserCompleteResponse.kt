@@ -2,7 +2,7 @@ package com.dudegenuine.app.model.user
 
 import com.dudegenuine.app.model.auth.AuthResponse
 import com.dudegenuine.app.model.file.Image
-import com.dudegenuine.app.model.token.TokenResponse
+import com.dudegenuine.app.model.device.DeviceResponse
 import com.dudegenuine.app.model.verifier.VerifierResponse
 import kotlinx.serialization.Serializable
 
@@ -22,7 +22,7 @@ data class UserCompleteResponse(
     val authResponse: AuthResponse?,
     val level: String?,
     val verifierResponse: List<VerifierResponse>,
-    val tokenResponses: List<TokenResponse>,
+    val deviceRespons: List<DeviceResponse>,
     val createdAt: String,
     val updatedAt: String?
 )

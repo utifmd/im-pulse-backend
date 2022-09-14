@@ -10,13 +10,12 @@ import com.dudegenuine.app.model.security.AuthTokenClaim
 import com.dudegenuine.app.model.security.AuthTokenConfig
 import com.dudegenuine.app.model.security.SaltedHash
 import com.dudegenuine.app.repository.contract.IAuthRepository
+import com.dudegenuine.app.repository.contract.IAuthRepository.Companion.PASSWORD_MISMATCH
 import com.dudegenuine.app.repository.dependency.IHashDependency
 import com.dudegenuine.app.repository.dependency.ITokenDependency
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.NotFoundException
 import com.dudegenuine.app.repository.validation.UnAuthorizationException
-import com.typesafe.config.ConfigFactory
-import io.ktor.server.config.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
@@ -54,35 +53,28 @@ class AuthRepository(
             id.value.toString()
         }
     }
-    override fun isUsernameExist(text: String) = transaction {
-        val auths = AuthDto.find{ Auths.username eq text }
-
-        !auths.empty()
-    }
     override fun onSignIn(request: AuthLoginRequest) = transaction {
         val (mEmailOrUsername, mPassword) = request
-        val auths = AuthDto.find{ Auths.email.eq(mEmailOrUsername) or Auths.username.eq(mEmailOrUsername) }
+        val auths = AuthDto.find{ Auths.emailOrUsername eq mEmailOrUsername }
         val dto = auths.firstOrNull() ?: throw NotFoundException()
 
         val saltedHash = SaltedHash(dto.password, dto.salt)
-        if (!hashDependency.verify(mPassword, saltedHash)) throw UnAuthorizationException()
+        if (!hashDependency.verify(mPassword, saltedHash))
+            throw UnAuthorizationException(PASSWORD_MISMATCH)
 
         tokenDependency.generate(
             authTokenConfig, AuthTokenClaim("userId", dto.id.value.toString())
         )
     }
     override fun onSignUp(request: AuthRegisterRequest) = transaction {
-        val (mEmail, mUsername, mPassword) = request
+        val (mEmailOrUsername, mPassword) = request
         val (mHashedPassword, mSalt) = hashDependency.generateSaltedHash(mPassword)
 
-        val auths = AuthDto.find{
-            (Auths.email eq mEmail) or (Auths.username eq mUsername)
-        }
+        val auths = AuthDto.find{ Auths.emailOrUsername eq mEmailOrUsername } //(Auths.emailOrUsername eq mEmail) or (Auths.username eq mUsername)
         if (!auths.empty()) throw AlreadyExistException()
 
         AuthDto.new {
-            email = mEmail
-            username = mUsername
+            emailOrUsername = mEmailOrUsername
             password = mHashedPassword
             lastPassword = mHashedPassword
             salt = mSalt
@@ -91,12 +83,11 @@ class AuthRepository(
         Unit //dto.let(mapper::asResponse)
     }
     override fun updateAuth(request: AuthUpdateRequest) = transaction {
-        val (currentAuthId, mEmail, mUsername, mPassword, mLastPassword) = request
+        val (currentAuthId, mEmailOrUsername, mPassword, mLastPassword) = request
         val dto = AuthDto.findById(UUID.fromString(currentAuthId)) ?: throw NotFoundException()
 
         dto.apply {
-            email = mEmail
-            username = mUsername
+            emailOrUsername = mEmailOrUsername
             password = mPassword
             lastPassword = mLastPassword
             updatedAt = System.currentTimeMillis()

@@ -4,8 +4,8 @@ import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.auth.AuthResponse
 import com.dudegenuine.app.model.file.Image
-import com.dudegenuine.app.model.level.LevelResponse
-import com.dudegenuine.app.model.token.TokenResponse
+import com.dudegenuine.app.model.role.RoleResponse
+import com.dudegenuine.app.model.device.DeviceResponse
 import com.dudegenuine.app.model.user.UserCensorResponse
 import com.dudegenuine.app.model.user.UserCompleteResponse
 import com.dudegenuine.app.model.verifier.VerifierResponse
@@ -28,7 +28,7 @@ class UserMapper: IUserMapper {
             authResponse = authDto.let(::asAuth),
             level = null, //levelDto?.status,
             verifierResponse = emptyList(), //verifier?.map(::asVerifier) ?: emptyList(),
-            tokenResponses = emptyList(), //tokens?. map(::asToken) ?: emptyList(),
+            deviceRespons = emptyList(), //tokens?. map(::asToken) ?: emptyList(),
             createdAt = createdAt.let(Utils::formattedDate),
             updatedAt = updatedAt?.let(Utils::formattedDate)
         )
@@ -38,13 +38,13 @@ class UserMapper: IUserMapper {
             id = id.value.toString(),
             firstName = firstName,
             lastName = lastName,
-            email = authDto.email,
+            email = authDto.emailOrUsername,
             username = authDto.username,
             profilePictureUrl = profileDto?.pictureDto?.url,
             region = profileDto?.region,
-            level = levelDto?.status,
+            level = roleDto?.current,
             status = profileDto?.status,
-            tokens = tokens.map(TokenDto::content), /*.limit()*/
+            tokens = tokens.map(DeviceDto::token), /*.limit()*/
             createdAt = createdAt.let(Utils::formattedDate),
         )
     }
@@ -57,7 +57,7 @@ class UserMapper: IUserMapper {
     override fun asAuth(dto: AuthDto) = with(dto){
         AuthResponse(
             authId = id.value.toString(),
-            email = email,
+            email = emailOrUsername,
             username = username,
             password = password,
             lastPassword = lastPassword,
@@ -65,8 +65,8 @@ class UserMapper: IUserMapper {
                 ?.let(Utils::formattedDate),
         )
     }
-    override fun asLevel(dto: LevelDto) = with(dto){
-        LevelResponse(status = status)
+    override fun asLevel(dto: RoleDto) = with(dto){
+        RoleResponse(status = current)
     }
     override fun asVerifier(dto: VerifierDto) = with(dto){
         VerifierResponse(
@@ -78,7 +78,7 @@ class UserMapper: IUserMapper {
     override fun asImage(dto: ImageDto) = with(dto){
         Image(url, updatedAt)
     }
-    override fun asToken(dto: TokenDto) = with(dto){
-        TokenResponse(content, type)
+    override fun asToken(dto: DeviceDto) = with(dto){
+        DeviceResponse(token, type)
     }
 }

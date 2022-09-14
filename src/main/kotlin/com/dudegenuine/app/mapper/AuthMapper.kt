@@ -14,7 +14,7 @@ class AuthMapper: IAuthMapper {
     override fun asResponse(dto: AuthDto) = with(dto){
         AuthResponse(
             authId = id.value.toString(),
-            email = email,
+            email = emailOrUsername,
             username = username,
             password = password,
             lastPassword = lastPassword,

@@ -21,13 +21,16 @@ val serviceModule = module {
     single<IFileService> {
         FileService(get())
     }
-    single<ILevelService> {
-        LevelService(get())
+    single<IRoleService> {
+        RoleService(get())
     }
     single<IImageService> {
         ImageService(get())
     }
-    single<ITokenService> {
-        TokenService(get())
+    single<IDeviceService> {
+        DeviceService(get())
+    }
+    single<IContactService> {
+        ContactService(get())
     }
 }

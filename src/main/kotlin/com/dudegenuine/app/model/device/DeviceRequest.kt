@@ -1,13 +1,14 @@
-package com.dudegenuine.app.model.level
+package com.dudegenuine.app.model.device
 
 import kotlinx.serialization.Serializable
 
 /**
- * Sun, 11 Sep 2022
+ * Mon, 12 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class LevelCreateRequest(
-    val status: String,
+data class DeviceRequest(
+    val token: String,
+    val type: String,
     val userId: String
 )

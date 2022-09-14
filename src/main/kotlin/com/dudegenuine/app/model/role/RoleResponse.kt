@@ -1,4 +1,4 @@
-package com.dudegenuine.app.model.token
+package com.dudegenuine.app.model.role
 
 import kotlinx.serialization.Serializable
 
@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class TokenResponse(
-    val content: String,
-    val type: String,
+data class RoleResponse(
+    val status: String
 )
