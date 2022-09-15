@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.user.UserCreateRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IUserService
@@ -23,7 +23,7 @@ fun Route.addUser(
         val resp = service.addUser(user)
         call.respond(
             status = HttpStatusCode.Created,
-            message = WebResponse(resp)
+            message = SuccessResponse(resp)
         )
     }
 }
@@ -34,7 +34,7 @@ fun Route.findUser(
         val user = service.findUser(userId)
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(user)
+            message = SuccessResponse(user)
         )
     }
 }
@@ -45,7 +45,7 @@ fun Route.removeUser(
         service.removeUser(userId)
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(userId)
+            message = SuccessResponse(userId)
         )
     }
 }
@@ -59,7 +59,7 @@ fun Route.listUsers(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(users)
+            message = SuccessResponse(users)
         )
     }
 }

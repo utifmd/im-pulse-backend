@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.role.RoleCreateRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IRoleService
@@ -24,7 +24,7 @@ fun Route.addRole(
 
         call.respond(
             status = HttpStatusCode.Created,
-            message = WebResponse(resp)
+            message = SuccessResponse(resp)
         )
     }
 }
@@ -36,7 +36,7 @@ fun Route.findRole(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(resp)
+            message = SuccessResponse(resp)
         )
     }
 }

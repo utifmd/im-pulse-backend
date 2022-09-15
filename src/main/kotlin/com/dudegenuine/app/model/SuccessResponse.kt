@@ -7,6 +7,6 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class WebResponse<T>(
+data class SuccessResponse<T>(
     val data: T,
 )

@@ -1,6 +1,6 @@
 package com.dudegenuine.plugins
 
-import com.dudegenuine.app.model.ExceptionResponse
+import com.dudegenuine.app.model.FailedResponse
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
@@ -20,28 +20,28 @@ fun Application.configureException(){
             when(cause){
                 is NotFoundException -> call.respond(
                     HttpStatusCode.NotFound,
-                    ExceptionResponse(
+                    FailedResponse(
                         code = HttpStatusCode.NotFound.value,
                         message = cause.localizedMessage
                     )
                 )
                 is BadRequestException -> call.respond(
                     HttpStatusCode.BadRequest,
-                    ExceptionResponse(
+                    FailedResponse(
                         code = HttpStatusCode.BadRequest.value,
                         message = cause.localizedMessage
                     )
                 )
                 is AlreadyExistException -> call.respond(
                     HttpStatusCode.BadRequest,
-                    ExceptionResponse(
+                    FailedResponse(
                         code = HttpStatusCode.BadRequest.value,
                         message = cause.localizedMessage
                     )
                 )
                 is UnAuthorizationException -> call.respond(
                     HttpStatusCode.Unauthorized,
-                    ExceptionResponse(
+                    FailedResponse(
                         code = HttpStatusCode.Unauthorized.value,
                         message = cause.localizedMessage
                     )
@@ -56,7 +56,7 @@ fun Application.configureException(){
                 HttpStatusCode.InternalServerError -> {
                     call.respond(
                         HttpStatusCode.InternalServerError,
-                        ExceptionResponse(
+                        FailedResponse(
                             code = HttpStatusCode.InternalServerError.value,
                             message = "Oops! internal server error at our end"
                         )
@@ -65,7 +65,7 @@ fun Application.configureException(){
                 HttpStatusCode.BadGateway -> {
                     call.respond(
                         HttpStatusCode.BadGateway,
-                        ExceptionResponse(
+                        FailedResponse(
                             code = HttpStatusCode.BadGateway.value,
                             message = "Oops! We got a bad gateway. Fixing it. Hold on!"
                         )

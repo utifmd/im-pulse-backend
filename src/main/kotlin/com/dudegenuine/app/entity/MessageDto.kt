@@ -28,5 +28,8 @@ class MessageDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var userId by Messages.userId
     var conversationId by Messages.conversationId
 
-    companion object: EntityClass<UUID, MessageDto>(Messages)
+    companion object: EntityClass<UUID, MessageDto>(Messages){
+        const val TYPE_MESSAGE = "MESSAGE"
+        const val TYPE_TYPING = "TYPING"
+    }
 }

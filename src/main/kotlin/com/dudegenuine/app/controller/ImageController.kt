@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.image.ImageCreateRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IImageService
@@ -24,7 +24,7 @@ fun Route.addImage(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }

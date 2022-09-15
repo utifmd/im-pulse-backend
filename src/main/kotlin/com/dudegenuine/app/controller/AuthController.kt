@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.auth.AuthRegisterRequest
 import com.dudegenuine.app.model.auth.AuthLoginRequest
 import com.dudegenuine.app.model.auth.AuthUpdateRequest
@@ -39,7 +39,7 @@ fun Route.signIn(
         val token = service.onSignIn(request)
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(token)
+            message = SuccessResponse(token)
         )
     }
 }
@@ -53,7 +53,7 @@ fun Route.claimAuthId(){
             }
             call.respond(
                 HttpStatusCode.OK,
-                WebResponse(userId)
+                SuccessResponse(userId)
             )
         }
     }
@@ -74,7 +74,7 @@ fun Route.findAuth(
         }
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(auth)
+            message = SuccessResponse(auth)
         )
     }
 }
@@ -88,19 +88,7 @@ fun Route.patchAuth(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(auth)
-        )
-    }
-}
-fun Route.isUsernameExist(
-    service: IAuthService){
-    get("api/auth/is-username-exist/{username}") {
-        val username = call.parameters["username"] ?: throw BadRequestException()
-        val data = service.isUsernameExist(username)
-
-        call.respond(
-            status = HttpStatusCode.OK,
-            message = WebResponse(data)
+            message = SuccessResponse(auth)
         )
     }
 }
@@ -120,7 +108,7 @@ fun Route.listAuths(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(list)
+            message = SuccessResponse(list)
         )
     }
 }
@@ -131,7 +119,7 @@ fun Route.removeAuth(
         val result = service.deleteAuth(authId)
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(result)
+            message = SuccessResponse(result)
         )
     }
 }

@@ -5,7 +5,12 @@ import io.ktor.server.auth.jwt.*
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.dudegenuine.app.model.security.AuthTokenConfig
+import com.dudegenuine.app.model.conversation.session.ConverseSession
+import com.dudegenuine.app.repository.validation.BadRequestException
 import io.ktor.server.application.*
+import io.ktor.server.application.ApplicationCallPipeline.ApplicationPhase.Plugins
+import io.ktor.server.sessions.*
+import io.ktor.util.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureSecurity() {
@@ -29,5 +34,18 @@ fun Application.configureSecurity() {
                 }
             }
         }
+    install(Sessions){
+        cookie<ConverseSession>("CONVERSE_SESSION")
+    }
+    intercept(Plugins){
+        with(call){
+            if (sessions.get<ConverseSession>() == null){
 
+                val converseId = parameters["converseId"]
+                    ?: throw BadRequestException("converseId")
+
+                sessions.set(ConverseSession(converseId))
+            }
+        }
+    }
 }

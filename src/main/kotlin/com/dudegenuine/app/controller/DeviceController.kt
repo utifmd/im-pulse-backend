@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.device.DeviceRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IDeviceService
@@ -24,7 +24,7 @@ fun Route.addDevice(
 
         call.respond(
             status = HttpStatusCode.Created,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }
@@ -36,7 +36,7 @@ fun Route.removeDevice(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }

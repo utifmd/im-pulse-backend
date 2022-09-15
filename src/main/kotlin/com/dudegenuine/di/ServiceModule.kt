@@ -33,4 +33,10 @@ val serviceModule = module {
     single<IContactService> {
         ContactService(get())
     }
+    single<IMessageService> {
+        MessageService(get())
+    }
+    single<IConversationService>{
+        ConversationService(get(), get())
+    }
 }

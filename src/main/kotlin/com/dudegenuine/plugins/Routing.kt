@@ -7,16 +7,30 @@ import io.ktor.server.application.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
+
     val authService: IAuthService by inject()
+
     val userService: IUserService by inject()
+
     val profileService: IProfileService by inject()
+
     val fileService: IFileService by inject()
+
     val levelService: IRoleService by inject()
+
     val imageService: IImageService by inject()
+
     val deviceService: IDeviceService by inject()
+
     val contactService: IContactService by inject()
 
+    val converseService: IConversationService by inject()
+
     install(Routing){
+        configureExceptionRoutes()
+        converseService.apply(::chatConversation)
+        imageService.apply(::addImage)
+
         with(authService){
             apply(::signIn)
             apply(::signUp)
@@ -24,13 +38,12 @@ fun Application.configureRouting() {
             apply(::patchAuth)
             apply(::listAuths)
             apply(::removeAuth)
-            apply(::isUsernameExist)
             authenticate()
             claimAuthId()
         }
         with(contactService){
             apply(::addContact)
-            apply(::putContact)
+            apply(::putContact) //apply(::isUsernameExist)
         }
         with(userService){
             apply(::addUser)
@@ -55,8 +68,5 @@ fun Application.configureRouting() {
             apply(::addDevice)
             apply(::removeDevice)
         }
-
-        imageService.apply(::addImage)
-        configureExceptionRoutes()
     }
 }

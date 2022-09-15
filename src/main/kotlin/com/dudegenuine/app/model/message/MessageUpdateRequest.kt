@@ -8,7 +8,7 @@ data class MessageUpdateRequest(
     val messageId: String,
     val text: String,
     val type: String,
-    val createdAt: String,
-    val updatedAt: String?,
-    val deletedAt: String?
+    val createdAt: Long,
+    val updatedAt: Long?,
+    val deletedAt: Long?
 )

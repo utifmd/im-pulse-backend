@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 @Serializable
-data class ExceptionResponse(
+data class FailedResponse(
     val code: Int,
     val message: String
 )

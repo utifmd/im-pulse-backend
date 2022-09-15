@@ -37,9 +37,7 @@ class UserMapper: IUserMapper {
         UserCensorResponse(
             id = id.value.toString(),
             firstName = firstName,
-            lastName = lastName,
-            email = authDto.emailOrUsername,
-            username = authDto.username,
+            lastName = lastName, //emailOrUsername = authDto.emailOrUsername,
             profilePictureUrl = profileDto?.pictureDto?.url,
             region = profileDto?.region,
             level = roleDto?.current,
@@ -57,8 +55,7 @@ class UserMapper: IUserMapper {
     override fun asAuth(dto: AuthDto) = with(dto){
         AuthResponse(
             authId = id.value.toString(),
-            email = emailOrUsername,
-            username = username,
+            emailOrUsername = emailOrUsername,
             password = password,
             lastPassword = lastPassword,
             updatedAt = updatedAt

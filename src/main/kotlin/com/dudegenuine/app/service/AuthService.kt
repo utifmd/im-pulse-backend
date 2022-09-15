@@ -25,6 +25,6 @@ class AuthService(
         repository.deleteAuth(authId)
     override fun updateAuth(request: AuthUpdateRequest) =
         repository.updateAuth(request)
-    override fun isUsernameExist(text: String) =
-        repository.isUsernameExist(text)
+    /*override fun isUsernameExist(text: String) =
+        repository.isUsernameExist(text)*/
 }

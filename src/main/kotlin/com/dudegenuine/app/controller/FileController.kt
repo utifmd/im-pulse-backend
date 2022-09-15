@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IFileService
 import io.ktor.http.*
@@ -8,7 +8,6 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.lang.IllegalStateException
 
 /**
  * Wed, 07 Sep 2022
@@ -25,7 +24,7 @@ fun Route.addFile(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(fileId)
+            message = SuccessResponse(fileId)
         )
     }
 }
@@ -57,7 +56,7 @@ fun Route.removeFile(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }

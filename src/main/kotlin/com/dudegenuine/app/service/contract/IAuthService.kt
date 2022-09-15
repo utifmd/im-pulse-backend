@@ -16,5 +16,5 @@ interface IAuthService {
     fun deleteAuth(authId: String): String
     fun updateAuth(request: AuthUpdateRequest): AuthResponse
     fun listAuths(pageAndSize: Pair<Long, Int>): List<AuthResponse>
-    fun isUsernameExist(text: String): Boolean
+    //fun isUsernameExist(text: String): Boolean
 }

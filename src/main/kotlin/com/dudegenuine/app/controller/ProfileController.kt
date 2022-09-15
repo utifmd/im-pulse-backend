@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.profile.ProfileCreateRequest
 import com.dudegenuine.app.model.profile.ProfileUpdateRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
@@ -25,7 +25,7 @@ fun Route.addProfile(
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }
@@ -38,7 +38,7 @@ fun Route.patchProfile(service: IProfileService){
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }

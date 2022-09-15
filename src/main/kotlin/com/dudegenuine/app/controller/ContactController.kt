@@ -1,6 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.model.WebResponse
+import com.dudegenuine.app.model.SuccessResponse
 import com.dudegenuine.app.model.contact.ContactCreateRequest
 import com.dudegenuine.app.model.contact.ContactUpdateRequest
 import com.dudegenuine.app.repository.validation.BadRequestException
@@ -24,7 +24,7 @@ fun Route.addContact(
         val response = service.addContact(request)
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
 }
@@ -36,7 +36,19 @@ fun Route.putContact(service: IContactService){
         val response = service.putContact(request)
         call.respond(
             status = HttpStatusCode.OK,
-            message = WebResponse(response)
+            message = SuccessResponse(response)
         )
     }
-}
+}/*
+fun Route.isUsernameExist(
+    service: IAuthService){
+    get("api/auth/is-username-exist/{username}") {
+        val username = call.parameters["username"] ?: throw BadRequestException()
+        val data = service.isUsernameExist(username)
+
+        call.respond(
+            status = HttpStatusCode.OK,
+            message = SuccessResponse(data)
+        )
+    }
+}*/

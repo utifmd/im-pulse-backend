@@ -10,9 +10,7 @@ import kotlinx.serialization.Serializable
 data class UserCensorResponse(
     val id: String,
     val firstName: String,
-    val lastName: String,
-    val email: String?,
-    val username: String?,
+    val lastName: String, //val emailOrUsername: String?,
     val profilePictureUrl: String?,
     val region: String?,
     val level: String?,

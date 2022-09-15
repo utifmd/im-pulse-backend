@@ -41,6 +41,12 @@ val repositoryModule = module {
     single<IContactRepository> {
         ContactRepository(get(), get())
     }
+    single<IMessageRepository> {
+        MessageRepository(get(), get())
+    }
+    single<IConversationRepository> {
+        ConversationRepository(get())
+    }
 }
 
 val mapperModule = module {
@@ -52,6 +58,7 @@ val mapperModule = module {
     single<IImageMapper> { ImageMapper() }
     single<IDeviceMapper> { DeviceMapper() }
     single<IContactMapper> { ContactMapper() }
+    single<IMessageMapper> { MessageMapper() }
 }
 
 val dependencyModule = module {
