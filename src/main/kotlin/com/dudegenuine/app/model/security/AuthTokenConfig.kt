@@ -7,6 +7,7 @@ package com.dudegenuine.app.model.security
 data class AuthTokenConfig(
     val audience: String,
     val issuer: String,
+    val realm: String,
     val expiresIn: Long,
     val secret: String
 )

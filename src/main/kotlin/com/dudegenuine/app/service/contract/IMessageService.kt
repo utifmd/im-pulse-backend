@@ -11,4 +11,5 @@ import com.dudegenuine.app.model.message.MessageUpdateRequest
 interface IMessageService{
     fun addMessage(request: MessageCreateRequest): MessageResponse
     fun putMessage(request: MessageUpdateRequest): MessageResponse
+    fun listMessages(conversationsId: String, pageAndSize: Pair<Long, Int>): List<MessageResponse>
 }

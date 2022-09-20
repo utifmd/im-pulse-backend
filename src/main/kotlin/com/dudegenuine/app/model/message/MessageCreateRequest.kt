@@ -1,5 +1,6 @@
 package com.dudegenuine.app.model.message
 
+import io.netty.util.internal.StringUtil.EMPTY_STRING
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,6 +11,6 @@ import kotlinx.serialization.Serializable
 data class MessageCreateRequest(
     val text: String,
     val type: String,
-    val userId: String,
-    val converseId: String
+    val userId: String? = null,
+    val converseId: String? = null
 )

@@ -27,7 +27,7 @@ class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
     /* this class as parent */
     val profileDto by ProfileDto optionalBackReferencedOn Profiles.userId
     val roleDto by RoleDto optionalBackReferencedOn Roles.userId
-    val tokens by DeviceDto referrersOn Devices.userId //val tokenDto by TokenDto via Tokens
+    val devices by DeviceDto referrersOn Devices.userId //val tokenDto by TokenDto via Tokens
 
     /* this class as child */
     var authDto by AuthDto referencedOn Users.authId

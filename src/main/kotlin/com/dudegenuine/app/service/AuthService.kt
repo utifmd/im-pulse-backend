@@ -4,6 +4,7 @@ import com.dudegenuine.app.model.auth.AuthRegisterRequest
 import com.dudegenuine.app.model.auth.AuthLoginRequest
 import com.dudegenuine.app.model.auth.AuthUpdateRequest
 import com.dudegenuine.app.repository.contract.IAuthRepository
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IAuthService
 
 /**
@@ -14,17 +15,29 @@ class AuthService(
     private val repository: IAuthRepository): IAuthService {
 
     override fun listAuths(pageAndSize: Pair<Long, Int>) =
-        repository.readAuths(pageAndSize)
+        try { repository.readAuths(pageAndSize) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
     override fun findAuth(authId: String) =
-        repository.readAuth(authId)
+        try { repository.readAuth(authId) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
     override fun onSignIn(request: AuthLoginRequest) =
-        repository.onSignIn(request)
+        try { repository.onSignIn(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
     override fun onSignUp(request: AuthRegisterRequest) =
-        repository.onSignUp(request)
+        try { repository.onSignUp(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
     override fun deleteAuth(authId: String) =
-        repository.deleteAuth(authId)
+        try { repository.deleteAuth(authId) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
     override fun updateAuth(request: AuthUpdateRequest) =
-        repository.updateAuth(request)
+        try { repository.updateAuth(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
     /*override fun isUsernameExist(text: String) =
         repository.isUsernameExist(text)*/
 }

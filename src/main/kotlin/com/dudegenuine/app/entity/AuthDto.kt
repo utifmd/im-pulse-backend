@@ -23,5 +23,6 @@ class AuthDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var lastPassword by Auths.lastPassword
     var salt by Auths.salt
     var updatedAt: Long? by Auths.updatedAt
+
     companion object: EntityClass<UUID, AuthDto>(Auths) //val users by UserDto optionalReferrersOn Users.authId
 }

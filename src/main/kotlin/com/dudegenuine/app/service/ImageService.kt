@@ -13,9 +13,8 @@ import com.dudegenuine.app.service.contract.IImageService
 class ImageService(
     private val repository: IImageRepository): IImageService {
 
-    override fun addImage(request: ImageCreateRequest) = try {
-        request.let(repository::createImage)
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
+    override fun addImage(request: ImageCreateRequest) =
+        try { request.let(repository::createImage) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 }

@@ -19,7 +19,7 @@ fun Route.configureExceptionRoutes() {
         configureStatusRoutes()
     }
 }
-fun Route.configureThrowableRoutes(){
+private fun Route.configureThrowableRoutes(){
     get("/not-found"){
         throw NotFoundException()
     }
@@ -33,8 +33,7 @@ fun Route.configureThrowableRoutes(){
         throw UnAuthorizationException()
     }
 }
-
-fun Route.configureStatusRoutes(){
+private fun Route.configureStatusRoutes(){
     get("/internal-error"){
         call.respond(HttpStatusCode.InternalServerError)
     }

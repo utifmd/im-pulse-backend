@@ -13,7 +13,7 @@ import java.util.*
 class TokenDependency: ITokenDependency {
     override fun generate(
         config: AuthTokenConfig, vararg claims: AuthTokenClaim): String {
-        val (mAudience, mIssuer, mExpiresIn, mSecret) = config
+        val (mAudience, mIssuer, _, mExpiresIn, mSecret) = config
         var mToken = JWT.create()
             .withAudience(mAudience)
             .withIssuer(mIssuer)

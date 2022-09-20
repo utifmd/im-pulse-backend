@@ -1,8 +1,10 @@
 package com.dudegenuine.app.service
 
 import com.dudegenuine.app.model.message.MessageCreateRequest
+import com.dudegenuine.app.model.message.MessageResponse
 import com.dudegenuine.app.model.message.MessageUpdateRequest
 import com.dudegenuine.app.repository.contract.IMessageRepository
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IMessageService
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -14,8 +16,17 @@ class MessageService(
     private val repository: IMessageRepository): IMessageService {
 
     override fun addMessage(request: MessageCreateRequest) =
-        repository.createMessage(request)
+        try { repository.createMessage(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 
     override fun putMessage(request: MessageUpdateRequest) =
-        repository.updateMessage(request)
+        try { repository.updateMessage(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
+
+    override fun listMessages(conversationsId: String, pageAndSize: Pair<Long, Int>) =
+        try { repository.listMessage(conversationsId, pageAndSize) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 }

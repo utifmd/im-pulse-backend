@@ -23,7 +23,7 @@ fun Route.signUp(
     service: IAuthService){
     post("api/auth/sign-up") {
         val request: AuthRegisterRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         service.onSignUp(request)
 
@@ -34,7 +34,7 @@ fun Route.signIn(
     service: IAuthService){
     post("api/auth/sign-in"){
         val request: AuthLoginRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val token = service.onSignIn(request)
         call.respond(
@@ -45,9 +45,9 @@ fun Route.signIn(
 }
 fun Route.claimAuthId(){
     authenticate {
-        get("api/auth/claim-id"){
+        get("api/auth/claim-auth-id"){
             val userId = try {
-                call.principal<JWTPrincipal>()?.getClaim("userId", String::class)
+                call.principal<JWTPrincipal>()?.getClaim("authId", String::class)
             } catch (e: Exception){
                 throw UnAuthorizationException(e.localizedMessage)
             }

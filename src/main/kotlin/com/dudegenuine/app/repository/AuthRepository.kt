@@ -63,18 +63,18 @@ class AuthRepository(
             throw UnAuthorizationException(PASSWORD_MISMATCH)
 
         tokenDependency.generate(
-            authTokenConfig, AuthTokenClaim("userId", dto.id.value.toString())
+            authTokenConfig, AuthTokenClaim("authId", dto.id.value.toString())
         )
     }
     override fun onSignUp(request: AuthRegisterRequest) = transaction {
-        val (mEmailOrUsername, mPassword) = request
+        val (mEmail, mPassword) = request
         val (mHashedPassword, mSalt) = hashDependency.generateSaltedHash(mPassword)
 
-        val auths = AuthDto.find{ Auths.emailOrUsername eq mEmailOrUsername } //(Auths.emailOrUsername eq mEmail) or (Auths.username eq mUsername)
+        val auths = AuthDto.find{ Auths.emailOrUsername eq mEmail } //(Auths.emailOrUsername eq mEmail) or (Auths.username eq mUsername)
         if (!auths.empty()) throw AlreadyExistException()
 
         AuthDto.new {
-            emailOrUsername = mEmailOrUsername
+            emailOrUsername = mEmail
             password = mHashedPassword
             lastPassword = mHashedPassword
             salt = mSalt

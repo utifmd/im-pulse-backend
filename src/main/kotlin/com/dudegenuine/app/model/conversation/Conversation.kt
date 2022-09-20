@@ -7,6 +7,7 @@ import io.ktor.websocket.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 data class Conversation(
-    val converseId: String,
+    val from: String,
+    val to: String,
     val socket: WebSocketSession
 )

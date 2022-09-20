@@ -9,7 +9,7 @@ import com.dudegenuine.app.model.message.MessageUpdateRequest
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface IMessageRepository {
-    fun listMessage(pageAndSize: Pair<Long, Int>): List<MessageResponse>
+    fun listMessage(conversationId: String, pageAndSize: Pair<Long, Int>): List<MessageResponse>
     fun createMessage(request: MessageCreateRequest): MessageResponse
     fun updateMessage(request: MessageUpdateRequest): MessageResponse
 }

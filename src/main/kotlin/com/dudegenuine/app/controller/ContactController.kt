@@ -19,7 +19,7 @@ fun Route.addContact(
     service: IContactService){
     get("api/contacts"){
         val request: ContactCreateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException("contactId")
+            throw BadRequestException()
         }
         val response = service.addContact(request)
         call.respond(
@@ -31,7 +31,7 @@ fun Route.addContact(
 fun Route.putContact(service: IContactService){
     put("api/contacts"){
         val request: ContactUpdateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException("contactId")
+            throw BadRequestException()
         }
         val response = service.putContact(request)
         call.respond(

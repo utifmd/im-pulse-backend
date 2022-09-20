@@ -18,7 +18,7 @@ fun Route.addRole(
     service: IRoleService){
     post("api/roles") {
         val request: RoleCreateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val resp = service.addRole(request)
 

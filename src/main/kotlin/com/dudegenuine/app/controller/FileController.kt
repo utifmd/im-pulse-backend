@@ -18,7 +18,7 @@ fun Route.addFile(
 
     post("api/files") {
         val fileMultipartData = try{ call.receiveMultipart() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val fileId = service.uploadFile(fileMultipartData)
 

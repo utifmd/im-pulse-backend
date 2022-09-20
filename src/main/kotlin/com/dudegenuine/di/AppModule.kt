@@ -21,6 +21,7 @@ val appModule = module {
         AuthTokenConfig(
             audience = config.getString("jwt.audience"),
             issuer = config.getString("jwt.issuer"),
+            realm = config.getString("jwt.realm"),
             expiresIn = 365L * 1000L * 60L * 60L * 24L,
             secret = getProperty("JWT_SECRET") as String
         )

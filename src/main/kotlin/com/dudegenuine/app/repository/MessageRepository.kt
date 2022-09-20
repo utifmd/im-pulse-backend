@@ -9,6 +9,7 @@ import com.dudegenuine.app.model.message.MessageUpdateRequest
 import com.dudegenuine.app.repository.contract.IMessageRepository
 import com.dudegenuine.app.repository.validation.NotFoundException
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
@@ -19,10 +20,14 @@ import java.util.*
  **/
 class MessageRepository(
     private val mapper: IMessageMapper, database: Database): IMessageRepository {
-    override fun listMessage(pageAndSize: Pair<Long, Int>) = transaction {
+    init {
+        transaction { SchemaUtils.create(Messages) }
+    }
+    override fun listMessage(
+        conversationId: String, pageAndSize: Pair<Long, Int>) = transaction {
         val (page, size) = pageAndSize
 
-        MessageDto.all()
+        MessageDto.find{ Messages.conversationId eq UUID.fromString(conversationId) }
             .limit(size, offset = page)
             .orderBy(Messages.createdAt to SortOrder.DESC)
             .map(mapper::asResponse)
@@ -36,8 +41,8 @@ class MessageRepository(
             createdAt = System.currentTimeMillis()
             updatedAt = null
             deletedAt = null
-            userId = UUID.fromString(mUserId)
-            conversationId = UUID.fromString(mConverseId)
+            userId = mUserId?.let(UUID::fromString)
+            conversationId = mConverseId?.let(UUID::fromString)
         }
         dto.let(mapper::asResponse)
     }

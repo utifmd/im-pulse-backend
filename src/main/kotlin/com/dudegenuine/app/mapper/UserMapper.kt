@@ -42,7 +42,7 @@ class UserMapper: IUserMapper {
             region = profileDto?.region,
             level = roleDto?.current,
             status = profileDto?.status,
-            tokens = tokens.map(DeviceDto::token), /*.limit()*/
+            tokens = devices.map(DeviceDto::token), /*.limit()*/
             createdAt = createdAt.let(Utils::formattedDate),
         )
     }

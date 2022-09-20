@@ -4,8 +4,8 @@ import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.user.*
 import com.dudegenuine.app.repository.contract.IUserRepository
+import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.NotFoundException
-import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -22,15 +22,17 @@ class UserRepository(
     }
     override fun createUser(request: UserCreateRequest): UserCensorResponse = transaction {
         val (mFirstName, mLastName, mAuthId) = request
+        val users = UserDto.find{ Users.authId eq UUID.fromString(mAuthId) }
+        if(!users.empty()) throw AlreadyExistException()
 
-        val users = UserDto.new {
+        val dto = UserDto.new {
             firstName = mFirstName
             lastName = mLastName
             authDto = AuthDto[UUID.fromString(mAuthId)]
             createdAt = System.currentTimeMillis()
             updatedAt = null
         }
-        users.let(mapper::asUserCensorResponse)
+        dto.let(mapper::asUserCensorResponse)
     }
     override fun deleteUser(userId: String) = transaction {
         val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()

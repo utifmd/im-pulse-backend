@@ -5,5 +5,6 @@ package com.dudegenuine.app.model.conversation.session
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 data class ConverseSession(
-    val converseId: String
+    val from: String,
+    val to: String
 )

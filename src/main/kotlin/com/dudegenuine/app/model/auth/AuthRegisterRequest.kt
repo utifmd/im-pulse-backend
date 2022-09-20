@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class AuthRegisterRequest(
-    val emailOrUsername: String,
+    val email: String,
     val password: String
 )

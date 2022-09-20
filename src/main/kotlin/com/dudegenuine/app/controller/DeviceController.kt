@@ -18,7 +18,7 @@ fun Route.addDevice(
     service: IDeviceService){
     post("api/devices"){
         val request: DeviceRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val response = service.addDevice(request)
 

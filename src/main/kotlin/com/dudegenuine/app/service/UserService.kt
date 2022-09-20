@@ -11,24 +11,21 @@ import com.dudegenuine.app.service.contract.IUserService
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class UserService(
-    private val repository: IUserRepository
-): IUserService {
+    private val repository: IUserRepository): IUserService {
     override fun listUsers(pageAndSize: Pair<Long, Int>) =
-        repository.getUsersCensor(pageAndSize)
-    override fun addUser(createRequest: UserCreateRequest) = try {
-        createRequest.let(repository::createUser)
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
-    override fun findUser(userId: String) = try {
-        repository.getUserCensorOrNull(userId) ?: throw NotFoundException()
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
-    override fun removeUser(userId: String) = try {
-        userId.let(repository::deleteUser)
-
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
+        try{ repository.getUsersCensor(pageAndSize) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
+    override fun addUser(createRequest: UserCreateRequest) =
+        try { createRequest.let(repository::createUser) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
+    override fun findUser(userId: String) =
+        try { repository.getUserCensorOrNull(userId) ?: throw NotFoundException() } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
+    override fun removeUser(userId: String) =
+        try { userId.let(repository::deleteUser) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 }

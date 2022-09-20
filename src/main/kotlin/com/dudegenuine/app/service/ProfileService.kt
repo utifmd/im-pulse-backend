@@ -13,15 +13,13 @@ import com.dudegenuine.app.service.contract.IProfileService
 class ProfileService(
     private val repository: IProfileRepository): IProfileService {
 
-    override fun addProfile(request: ProfileCreateRequest) = try {
-        repository.createProfile(request)
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
+    override fun addProfile(request: ProfileCreateRequest) =
+        try { repository.createProfile(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 
-    override fun patchProfile(request: ProfileUpdateRequest) = try {
-        repository.updateProfile(request)
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
+    override fun patchProfile(request: ProfileUpdateRequest) =
+        try { repository.updateProfile(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 }

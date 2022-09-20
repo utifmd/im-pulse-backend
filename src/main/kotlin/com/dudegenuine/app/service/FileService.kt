@@ -1,6 +1,7 @@
 package com.dudegenuine.app.service
 
 import com.dudegenuine.app.repository.contract.IFileRepository
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IFileService
 import io.ktor.http.content.*
 
@@ -10,7 +11,13 @@ import io.ktor.http.content.*
  **/
 class FileService(
     private val repository: IFileRepository): IFileService {
-    override fun readFile(id: String) = repository.getFile(id)
-    override fun deleteFile(id: String) = id.let(repository::deleteFile)
-    override suspend fun uploadFile(filePartData: MultiPartData) = repository.postFile(filePartData)
+    override fun readFile(id: String) = try { repository.getFile(id) } catch (e: Exception){
+        throw BadRequestException(e.localizedMessage)
+    }
+    override fun deleteFile(id: String) = try { id.let(repository::deleteFile) } catch (e: Exception){
+        throw BadRequestException(e.localizedMessage)
+    }
+    override suspend fun uploadFile(filePartData: MultiPartData) = try{ repository.postFile(filePartData) } catch (e: Exception){
+        throw BadRequestException(e.localizedMessage)
+    }
 }

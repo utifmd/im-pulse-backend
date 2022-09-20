@@ -13,14 +13,12 @@ class RoleService(
     private val repository: IRoleRepository
 ): IRoleService {
 
-    override fun addRole(request: RoleCreateRequest) = try {
-        repository.createRole(request)
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
-    override fun findRole(roleId: String) = try {
-        repository.readRole(roleId)
-    } catch (e: Exception){
-        throw BadRequestException(e.localizedMessage)
-    }
+    override fun addRole(request: RoleCreateRequest) =
+        try { repository.createRole(request) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
+    override fun findRole(roleId: String) =
+        try { repository.readRole(roleId) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 }

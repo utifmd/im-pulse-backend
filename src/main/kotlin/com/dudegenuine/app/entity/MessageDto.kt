@@ -16,8 +16,8 @@ object Messages: UUIDTable("messages"){
     val createdAt = long("created_at")
     val updatedAt = long("updated_at").nullable()
     val deletedAt = long("deleted_at").nullable()
-    val userId = uuid("user_id")
-    val conversationId = uuid("converse_id")
+    val userId = uuid("user_id").nullable()
+    val conversationId = uuid("converse_id").nullable()
 }
 class MessageDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var text by Messages.text

@@ -1,6 +1,7 @@
 package com.dudegenuine.app.service
 
 import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_MESSAGE
+import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_TYPING
 import com.dudegenuine.app.model.conversation.Conversation
 import com.dudegenuine.app.model.conversation.session.ConverseSession
 import com.dudegenuine.app.model.message.MessageCreateRequest
@@ -23,15 +24,14 @@ class ConversationService(
 
     override suspend fun onJoinConversation(
         socket: WebSocketSession, session: ConverseSession) = with(converseRepository) {
-
-        val (mConverseId) = session
-        val conversation = Conversation(mConverseId, socket)
+        val (from, to) = session
+        val conversation = Conversation(from, to, socket)
 
         try {
-            onSessionConnect(conversation)
-            socket.incoming.consumeEach { frame ->
+            converseRepository.onSessionConnect(conversation)
+            socket.incoming.consumeEach { frame -> // observe session event
                 if (frame is Frame.Text)
-                    onBroadcastConverse(frame.readText())
+                    onBroadcastConverse(conversation, frame.readText())
             }
         } catch (e: Exception){
             e.printStackTrace()
@@ -40,16 +40,35 @@ class ConversationService(
             onSessionDisconnect(conversation)
         }
     }
-    private suspend fun onBroadcastConverse(payload: String) {
-        val message: MessageCreateRequest = try { Json.decodeFromString(payload) } catch (e: Exception){
+    override fun listConversations(userId: String, pageAndSize: Pair<Long, Int>) =
+        try { converseRepository.readConversations(userId, pageAndSize) } catch (e: Exception){
             throw BadRequestException(e.localizedMessage)
         }
-        if (message.type == TYPE_MESSAGE) // ~> then if userId isEquals it should be opposite broadcast target
-            message.let(messageRepository::createMessage)
+    override fun removeConversation(conversationId: String) =
+        try { converseRepository.deleteConversation(conversationId) } catch (e: Exception){
+            throw BadRequestException(e.localizedMessage)
+        }
 
-        converseRepository.onSendBroadcast(
-            converseId = message.converseId,
-            encodedMessage = payload
-        )
+    private suspend fun onBroadcastConverse(
+        conversation: Conversation, payload: String) = with(converseRepository) {
+        try {
+            val (mFrom, mTo) = conversation
+            val message: MessageCreateRequest = Json.decodeFromString(payload)
+
+            when (message.type) {
+                TYPE_MESSAGE -> {
+                    message
+                        .copy(userId = mFrom, converseId = mTo)
+                        .let(messageRepository::createMessage)
+
+                    onSendBroadcast(mFrom to mTo, payload)
+                }
+                TYPE_TYPING ->
+                    onSendBroadcast(mFrom to mTo, payload, true)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            onSessionDisconnect(conversation)
+        }
     }
 }

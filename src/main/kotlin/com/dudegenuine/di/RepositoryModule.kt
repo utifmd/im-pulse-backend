@@ -16,7 +16,6 @@ import org.koin.dsl.module
  **/
 
 val repositoryModule = module {
-
     single<IAuthRepository> {
         AuthRepository(get(), get(), get(), get(), get())
     }
@@ -45,7 +44,10 @@ val repositoryModule = module {
         MessageRepository(get(), get())
     }
     single<IConversationRepository> {
-        ConversationRepository(get())
+        ConversationRepository(get(), get())
+    }
+    single<IParticipantRepository> {
+        ParticipantRepository(get())
     }
 }
 
@@ -59,6 +61,7 @@ val mapperModule = module {
     single<IDeviceMapper> { DeviceMapper() }
     single<IContactMapper> { ContactMapper() }
     single<IMessageMapper> { MessageMapper() }
+    single<IConversationMapper> { ConversationMapper(get()) }
 }
 
 val dependencyModule = module {

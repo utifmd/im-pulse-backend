@@ -18,7 +18,7 @@ fun Route.addImage(
     service: IImageService){
     post("api/images") {
         val request: ImageCreateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val response = service.addImage(request)
 

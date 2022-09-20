@@ -18,7 +18,7 @@ fun Route.addUser(
     service: IUserService){
     post("/api/users"){
         val user: UserCreateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val resp = service.addUser(user)
         call.respond(

@@ -19,7 +19,7 @@ fun Route.addProfile(
     service: IProfileService){
     post("api/profiles") {
         val request: ProfileCreateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val response = service.addProfile(request)
 
@@ -32,7 +32,7 @@ fun Route.addProfile(
 fun Route.patchProfile(service: IProfileService){
     put("api/profiles") {
         val request: ProfileUpdateRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw BadRequestException()
         }
         val response = service.patchProfile(request)
 
