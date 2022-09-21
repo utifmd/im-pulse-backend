@@ -2,8 +2,7 @@ package com.dudegenuine.app.service
 
 import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_MESSAGE
 import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_TYPING
-import com.dudegenuine.app.model.conversation.Conversation
-import com.dudegenuine.app.model.conversation.session.ConverseSession
+import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.model.message.MessageCreateRequest
 import com.dudegenuine.app.repository.contract.IConversationRepository
 import com.dudegenuine.app.repository.contract.IMessageRepository
@@ -23,21 +22,18 @@ class ConversationService(
     private val messageRepository: IMessageRepository): IConversationService {
 
     override suspend fun onJoinConversation(
-        socket: WebSocketSession, session: ConverseSession) = with(converseRepository) {
-        val (from, to) = session
-        val conversation = Conversation(from, to, socket)
-
+        session: ConversationSession) = with(session) {
         try {
-            converseRepository.onSessionConnect(conversation)
+            val converseId = run(converseRepository::onSessionConnect)
             socket.incoming.consumeEach { frame -> // observe session event
                 if (frame is Frame.Text)
-                    onBroadcastConverse(conversation, frame.readText())
+                    onBroadcastConverse(converseId, session, frame.readText())
             }
         } catch (e: Exception){
             e.printStackTrace()
             socket.close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, e.localizedMessage))
         } finally {
-            onSessionDisconnect(conversation)
+            converseRepository.onSessionDisconnect(this)
         }
     }
     override fun listConversations(userId: String, pageAndSize: Pair<Long, Int>) =
@@ -50,15 +46,15 @@ class ConversationService(
         }
 
     private suspend fun onBroadcastConverse(
-        conversation: Conversation, payload: String) = with(converseRepository) {
+        converseId: String, session: ConversationSession, payload: String) = with(converseRepository) {
         try {
-            val (mFrom, mTo) = conversation
+            val (mConverseIdOrNull, mFrom, mTo) = session
             val message: MessageCreateRequest = Json.decodeFromString(payload)
 
             when (message.type) {
                 TYPE_MESSAGE -> {
                     message
-                        .copy(userId = mFrom, converseId = mTo)
+                        .copy(userId = mFrom, converseId = mConverseIdOrNull ?: converseId)
                         .let(messageRepository::createMessage)
 
                     onSendBroadcast(mFrom to mTo, payload)
@@ -68,7 +64,7 @@ class ConversationService(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            onSessionDisconnect(conversation)
+            onSessionDisconnect(session)
         }
     }
 }

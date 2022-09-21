@@ -1,6 +1,6 @@
 package com.dudegenuine.app.repository.contract
 
-import com.dudegenuine.app.model.conversation.Conversation
+import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.model.conversation.ConversationResponse
 
 /**
@@ -8,10 +8,10 @@ import com.dudegenuine.app.model.conversation.ConversationResponse
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface IConversationRepository {
-    fun requireCreateConversation(conversation: Conversation)
+    fun requireCreateConversation(conversationSession: ConversationSession): String
     fun deleteConversation(conversationId: String): String
     fun readConversations(userId: String, pageAndSize: Pair<Long, Int>): List<ConversationResponse>
-    fun onSessionConnect(conversation: Conversation)
+    fun onSessionConnect(conversationSession: ConversationSession): String
     suspend fun onSendBroadcast(fromAndTo: Pair<String, String>, encodedMessage: String, targetOnly: Boolean = false)
-    suspend fun onSessionDisconnect(conversation: Conversation)
+    suspend fun onSessionDisconnect(conversationSession: ConversationSession)
 }

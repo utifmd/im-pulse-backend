@@ -3,7 +3,6 @@ package com.dudegenuine.app.repository
 import com.dudegenuine.app.entity.ConversationDto
 import com.dudegenuine.app.entity.ParticipantDto
 import com.dudegenuine.app.entity.Participants
-import com.dudegenuine.app.model.conversation.Conversation
 import com.dudegenuine.app.model.participant.ParticipantCreateRequest
 import com.dudegenuine.app.repository.contract.IParticipantRepository
 import com.dudegenuine.app.repository.validation.AlreadyExistException

@@ -1,13 +1,11 @@
 package com.dudegenuine.app.model.conversation
 
-import io.ktor.websocket.*
-
 /**
  * Thu, 15 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-data class Conversation(
+data class ConversationRequest(
+    val converseId: String?,
     val from: String,
-    val to: String,
-    val socket: WebSocketSession
+    val to: String
 )

@@ -16,7 +16,6 @@ class MessageMapper: IMessageMapper {
         createdAt = dto.createdAt,
         updatedAt = dto.updatedAt,
         deletedAt = dto.deletedAt,
-        userId = dto.userId.toString(),
-        conversationId = dto.conversationId.toString(),
+        userId = dto.userId.toString() //, conversationId = dto.conversationId.toString(),
     )
 }

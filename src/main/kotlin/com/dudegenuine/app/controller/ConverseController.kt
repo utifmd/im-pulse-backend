@@ -1,7 +1,8 @@
 package com.dudegenuine.app.controller
 
 import com.dudegenuine.app.model.SuccessResponse
-import com.dudegenuine.app.model.conversation.session.ConverseSession
+import com.dudegenuine.app.model.conversation.ConversationRequest
+import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.service.contract.IConversationService
 import io.ktor.http.*
@@ -20,12 +21,15 @@ const val PATH_CHAT_CONVERSE: String = "api/chat-conversation"
 fun Route.chatConversation(
     service: IConversationService){
     webSocket(PATH_CHAT_CONVERSE) {
-        val session = call.sessions.get<ConverseSession>()
-        if (session == null){
+        val request = call.sessions.get<ConversationRequest>()
+        if (request == null){
             close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, "No session."))
             return@webSocket
         }
-        service.onJoinConversation(this, session)
+        val (mConverseId, mFrom, mTo) = request
+
+        val session = ConversationSession(mConverseId, mFrom, mTo, this)
+        service.onJoinConversation(session)
     }
 }
 fun Route.listConversations(

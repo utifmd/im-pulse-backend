@@ -12,6 +12,7 @@ import com.dudegenuine.app.model.conversation.ConversationResponse
 class ConversationMapper(
     private val userMapper: IUserMapper): IConversationMapper {
     override fun asResponse(dto: ConversationDto) = ConversationResponse(
+        conversationId = dto.id.value.toString(),
         title = dto.title,
         userId = dto.userId.toString(),
         createdAt = dto.createdAt,

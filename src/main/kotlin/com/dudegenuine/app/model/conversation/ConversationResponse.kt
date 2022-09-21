@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class ConversationResponse(
+    val conversationId: String,
     val title: String,
     val createdAt: Long,
     val updatedAt: Long?,
