@@ -7,11 +7,10 @@ import com.dudegenuine.app.entity.AuthDto
 import com.dudegenuine.app.entity.UserDto
 import com.dudegenuine.app.entity.VerifierDto
 import com.dudegenuine.app.model.auth.AuthResponse
-import com.dudegenuine.app.model.file.Image
 import com.dudegenuine.app.model.role.RoleResponse
 import com.dudegenuine.app.model.device.DeviceResponse
-import com.dudegenuine.app.model.user.UserCensorResponse
-import com.dudegenuine.app.model.user.UserCompleteResponse
+import com.dudegenuine.app.model.image.ImageResponse
+import com.dudegenuine.app.model.user.UserResponse
 import com.dudegenuine.app.model.verifier.VerifierResponse
 
 /**
@@ -19,15 +18,11 @@ import com.dudegenuine.app.model.verifier.VerifierResponse
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface IUserMapper {
-    fun asUserCompleteResponse(dto: UserDto): UserCompleteResponse
-    //fun asUserCompleteResponse(createRequest: UserCreateRequest): UserCompleteResponse
-    fun asUserCensorResponse(dto: UserDto): UserCensorResponse
-    //fun asDto(row: QueryRowSet): UserDto
-    fun asUserCompleteResponseOrNull(dto: UserDto?): UserCompleteResponse?
-    fun asUserCensorResponseOrNull(dto: UserDto?): UserCensorResponse?
-    fun asAuth(dto: AuthDto): AuthResponse
-    fun asLevel(dto: RoleDto): RoleResponse
-    fun asVerifier(dto: VerifierDto): VerifierResponse
-    fun asToken(dto: DeviceDto): DeviceResponse
-    fun asImage(dto: ImageDto): Image
+    fun asUserCompleteResponse(dto: UserDto): UserResponse
+    fun asUserHalfResponse(dto: UserDto): UserResponse
+    fun asAuthResponse(dto: AuthDto): AuthResponse
+    fun asRoleResponse(dto: RoleDto): RoleResponse
+    fun asVerifierResponse(dto: VerifierDto): VerifierResponse
+    fun asDeviceResponse(dto: DeviceDto): DeviceResponse
+    fun asImageResponse(dto: ImageDto): ImageResponse
 }

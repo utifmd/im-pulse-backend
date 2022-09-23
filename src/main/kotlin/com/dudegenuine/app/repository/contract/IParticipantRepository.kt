@@ -7,5 +7,9 @@ import com.dudegenuine.app.model.participant.ParticipantCreateRequest
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface IParticipantRepository {
-    fun requireCreateParticipant(request: ParticipantCreateRequest)
+    fun requireCreateParticipants(vararg requests: ParticipantCreateRequest)
+    companion object {
+        const val SENDER = "SENDER"
+        const val RECIPIENT = "RECIPIENT"
+    }
 }

@@ -4,6 +4,7 @@ import com.dudegenuine.app.model.image.ImageCreateRequest
 import com.dudegenuine.app.model.image.ImageResponse
 import com.dudegenuine.app.repository.contract.IImageRepository
 import com.dudegenuine.app.repository.validation.BadRequestException
+import com.dudegenuine.app.repository.validation.InternalErrorException
 import com.dudegenuine.app.service.contract.IImageService
 
 /**
@@ -15,6 +16,6 @@ class ImageService(
 
     override fun addImage(request: ImageCreateRequest) =
         try { request.let(repository::createImage) } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw InternalErrorException(e.localizedMessage)
         }
 }

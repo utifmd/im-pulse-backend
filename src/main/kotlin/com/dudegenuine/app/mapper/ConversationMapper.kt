@@ -2,6 +2,7 @@ package com.dudegenuine.app.mapper
 
 import com.dudegenuine.app.entity.ConversationDto
 import com.dudegenuine.app.mapper.contract.IConversationMapper
+import com.dudegenuine.app.mapper.contract.IParticipantMapper
 import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.conversation.ConversationResponse
 
@@ -10,15 +11,11 @@ import com.dudegenuine.app.model.conversation.ConversationResponse
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class ConversationMapper(
-    private val userMapper: IUserMapper): IConversationMapper {
+    private val psnMapper: IParticipantMapper): IConversationMapper {
     override fun asResponse(dto: ConversationDto) = ConversationResponse(
         conversationId = dto.id.value.toString(),
-        title = dto.title,
-        userId = dto.userId.toString(),
+        userId = dto.userId.value.toString(),
         createdAt = dto.createdAt,
-        updatedAt = dto.updatedAt,
-        deletedAt = dto.deletedAt,
-        targetUser = dto.targetUserDto
-            .let(userMapper::asUserCensorResponse),
+        participants = dto.participants.map(psnMapper::asResponse) //.map(userMapper::asUserCensorResponse)
     )
 }

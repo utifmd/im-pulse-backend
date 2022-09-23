@@ -8,5 +8,6 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class RoleResponse(
-    val status: String
+    val status: String,
+    val updatedAt: Long?
 )

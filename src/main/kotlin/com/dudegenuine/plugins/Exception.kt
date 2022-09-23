@@ -46,6 +46,13 @@ fun Application.configureException(){
                         message = cause.localizedMessage
                     )
                 )
+                is InternalError -> call.respond(
+                    HttpStatusCode.InternalServerError,
+                    FailedResponse(
+                        code = HttpStatusCode.InternalServerError.value,
+                        message = cause.localizedMessage
+                    )
+                )
             }
         }
         status(

@@ -24,6 +24,6 @@ class RoleDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var latest by Roles.latest
     var createdAt by Roles.createdAt
     var updatedAt by Roles.createdAt
-    var userDto by UserDto optionalReferencedOn Roles.userId
+    var userId by Roles.userId //UserDto optionalReferencedOn Roles.userId
     companion object: EntityClass<UUID, RoleDto>(Roles)
 }

@@ -1,6 +1,6 @@
 package com.dudegenuine.app.model.conversation
 
-import com.dudegenuine.app.model.user.UserCensorResponse
+import com.dudegenuine.app.model.participant.ParticipantResponse
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,10 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ConversationResponse(
     val conversationId: String,
-    val title: String,
     val createdAt: Long,
-    val updatedAt: Long?,
-    val deletedAt: Long?,
-    val targetUser: UserCensorResponse,
-    val userId: String,
+    val participants: List<ParticipantResponse>,
+    val userId: String
 )

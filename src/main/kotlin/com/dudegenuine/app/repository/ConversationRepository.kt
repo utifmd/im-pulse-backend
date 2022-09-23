@@ -1,17 +1,16 @@
 package com.dudegenuine.app.repository
 
-import com.dudegenuine.app.entity.ConversationDto
-import com.dudegenuine.app.entity.Conversations
-import com.dudegenuine.app.entity.UserDto
+import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IConversationMapper
 import com.dudegenuine.app.model.conversation.session.ConversationSession
+import com.dudegenuine.app.model.participant.ParticipantCreateRequest
 import com.dudegenuine.app.repository.contract.IConversationRepository
+import com.dudegenuine.app.repository.contract.IParticipantRepository.Companion.RECIPIENT
+import com.dudegenuine.app.repository.contract.IParticipantRepository.Companion.SENDER
 import com.dudegenuine.app.repository.validation.NotFoundException
 import io.ktor.websocket.*
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -20,19 +19,27 @@ import java.util.concurrent.ConcurrentHashMap
  * Thu, 15 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
+// TODO: all responses createdAt model change to long type
 class ConversationRepository(
     private val mapper: IConversationMapper, database: Database): IConversationRepository {
     private val activeSessions = ConcurrentHashMap<String, WebSocketSession>() // key is every userId
     init {
         transaction { SchemaUtils.create(Conversations) }
     }
-    override fun onSessionConnect(conversationSession: ConversationSession): String {
+    override fun onSessionConnect(
+        conversationSession: ConversationSession,
+        onRequireCreateParticipants: (sender: ParticipantCreateRequest, recipient: ParticipantCreateRequest) -> Unit): String {
         val (_, mFrom, mTo, mSocket) = conversationSession
 
         activeSessions[mFrom] = mSocket
         if (!activeSessions.containsKey(mTo)) activeSessions[mTo] = mSocket
 
-        return requireCreateConversation(conversationSession)
+        val converseId = requireCreateConversation(conversationSession)
+        val sender = ParticipantCreateRequest(mFrom, converseId, SENDER)
+        val recipient = ParticipantCreateRequest(mTo, converseId, RECIPIENT)
+
+        onRequireCreateParticipants(sender, recipient)
+        return converseId
     }
     override suspend fun onSessionDisconnect(conversationSession: ConversationSession) {
         val (_, mFrom, _, mSocket) = conversationSession
@@ -57,16 +64,20 @@ class ConversationRepository(
     override fun requireCreateConversation(conversationSession: ConversationSession) = transaction {
         val (mConverseIdOrNull, mUserId, mTargetUserId) = conversationSession
 
-        if (mConverseIdOrNull != null) return@transaction mConverseIdOrNull
+        if (mConverseIdOrNull != null) return@transaction mConverseIdOrNull // got from chat list
+
+        val dto = ConversationDto.find{
+            ((Conversations.userId eq UUID.fromString(mUserId)) and (Conversations.targetUserId eq UUID.fromString(mTargetUserId))) or
+                    ((Conversations.userId eq UUID.fromString(mTargetUserId)) and (Conversations.targetUserId eq UUID.fromString(mUserId))) } // [race condition] both create new in the sametime
+
+        if (!dto.empty()) return@transaction dto.firstOrNull()?.id?.value.toString()
+
         val conv = ConversationDto.new {
-            title = "Private chat"
-            createdAt = System.currentTimeMillis()
-            updatedAt = null
-            deletedAt = null
-            targetUserDto = UserDto[UUID.fromString(mTargetUserId)]
-            userId = UUID.fromString(mUserId)
+            createdAt = System.currentTimeMillis() //participants = ParticipantDto[UUID.fromString("")] isRead = false targetUserDto = UserDto[UUID.fromString(mTargetUserId)] userDto = UserDto[UUID.fromString(mUserId)]
+            targetUserId = EntityID(UUID.fromString(mTargetUserId), Users)
+            userId = EntityID(UUID.fromString(mUserId), Users)
         }
-        conv.id.value.toString()
+        conv.id.value.toString() //val mConverseId =
     }
     override fun readConversations(
         userId: String, pageAndSize: Pair<Long, Int>) = transaction {

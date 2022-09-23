@@ -11,7 +11,8 @@ import com.dudegenuine.app.model.role.RoleResponse
 class RoleMapper: IRoleMapper {
     override fun asResponse(dto: RoleDto) = with(dto) {
         RoleResponse(
-            status = current
+            status = current,
+            updatedAt = updatedAt
         )
     }
 }

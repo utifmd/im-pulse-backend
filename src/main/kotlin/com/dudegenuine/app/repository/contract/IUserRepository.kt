@@ -7,8 +7,8 @@ import com.dudegenuine.app.model.user.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 interface IUserRepository {
-    fun createUser(request: UserCreateRequest): UserCensorResponse
+    fun createUser(request: UserCreateRequest): UserResponse
     fun deleteUser(userId: String): String
-    fun getUserCensorOrNull(userId: String): UserCensorResponse?
-    fun getUsersCensor(pageAndSize: Pair<Long, Int>): List<UserCensorResponse>
+    fun getUserHalfOrNull(userId: String): UserResponse?
+    fun getUsersHalf(pageAndSize: Pair<Long, Int>): List<UserResponse>
 }

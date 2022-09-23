@@ -37,6 +37,6 @@ val serviceModule = module {
         MessageService(get())
     }
     single<IConversationService>{
-        ConversationService(get(), get())
+        ConversationService(get(), get(), get())
     }
 }

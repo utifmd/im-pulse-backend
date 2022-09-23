@@ -12,5 +12,5 @@ data class AuthResponse(
     val emailOrUsername: String,
     val password: String,
     val lastPassword: String,
-    val updatedAt: String?
+    val updatedAt: Long?
 )

@@ -38,7 +38,7 @@ fun Route.listConversations(
         val params = call.request.queryParameters
         val userId = call.parameters["userId"] ?: throw BadRequestException("userId")
         val page = params["page"]?.let(Integer::parseInt)?.toLong() ?: throw BadRequestException("page")
-        val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException("page")
+        val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException("size")
         val response = service.listConversations(userId, page to size)
 
         call.respond(

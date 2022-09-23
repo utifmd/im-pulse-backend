@@ -17,7 +17,7 @@ class AuthMapper: IAuthMapper {
             emailOrUsername = emailOrUsername,
             password = password,
             lastPassword = lastPassword,
-            updatedAt = updatedAt?.let(Utils::formattedDate),
+            updatedAt = updatedAt//?.let(Utils::formattedDate),
         )
     }
     /*override fun asDto(row: ResultRow): AuthDto {

@@ -1,11 +1,9 @@
 package com.dudegenuine.app.repository
 
-import com.dudegenuine.app.entity.ConversationDto
-import com.dudegenuine.app.entity.ParticipantDto
-import com.dudegenuine.app.entity.Participants
+import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.model.participant.ParticipantCreateRequest
 import com.dudegenuine.app.repository.contract.IParticipantRepository
-import com.dudegenuine.app.repository.validation.AlreadyExistException
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -19,19 +17,22 @@ class ParticipantRepository(database: Database): IParticipantRepository {
     init {
         transaction { SchemaUtils.create(Participants) }
     }
-    override fun requireCreateParticipant(request: ParticipantCreateRequest) {
-        val (mUserId, mConverseId) = request
-        val participants = ParticipantDto.find {
-            Participants.conversationId eq UUID.fromString(mConverseId)
-        }
-        if (!participants.empty()) throw AlreadyExistException()
+    override fun requireCreateParticipants(
+        vararg requests: ParticipantCreateRequest) = transaction {
+        val mCreatedAt = System.currentTimeMillis()
+        requests.forEach { (mUserId, mConverseId, mRole) ->
+            val participants = ParticipantDto.find {
+                Participants.conversationId eq UUID.fromString(mConverseId)
+            }
+            if (!participants.empty()) return@transaction
 
-        ParticipantDto.new {
-            type = "COUPLE"
-            createdAt = System.currentTimeMillis()
-            updatedAt = null
-            userId = UUID.fromString(mUserId)
-            conversationDto = ConversationDto[UUID.fromString(mConverseId)]
+            ParticipantDto.new {
+                role = mRole
+                isRead = false
+                createdAt = mCreatedAt
+                userDto = UserDto[UUID.fromString(mUserId)]
+                conversationId = EntityID(UUID.fromString(mConverseId), Conversations)
+            }
         }
     }
 }

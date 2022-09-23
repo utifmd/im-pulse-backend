@@ -6,5 +6,6 @@ package com.dudegenuine.app.model.participant
  **/
 data class ParticipantCreateRequest(
     val userId: String,
-    val conversationId: String
+    val conversationId: String,
+    val role: String
 )

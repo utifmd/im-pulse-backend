@@ -62,6 +62,7 @@ val mapperModule = module {
     single<IContactMapper> { ContactMapper() }
     single<IMessageMapper> { MessageMapper() }
     single<IConversationMapper> { ConversationMapper(get()) }
+    single<IParticipantMapper> { ParticipantMapper(get()) }
 }
 
 val dependencyModule = module {

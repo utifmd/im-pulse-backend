@@ -3,6 +3,7 @@ package com.dudegenuine.app.service
 import com.dudegenuine.app.model.role.RoleCreateRequest
 import com.dudegenuine.app.repository.contract.IRoleRepository
 import com.dudegenuine.app.repository.validation.BadRequestException
+import com.dudegenuine.app.repository.validation.InternalErrorException
 import com.dudegenuine.app.service.contract.IRoleService
 
 /**
@@ -15,10 +16,10 @@ class RoleService(
 
     override fun addRole(request: RoleCreateRequest) =
         try { repository.createRole(request) } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw InternalErrorException(e.localizedMessage)
         }
     override fun findRole(roleId: String) =
         try { repository.readRole(roleId) } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw InternalErrorException(e.localizedMessage)
         }
 }

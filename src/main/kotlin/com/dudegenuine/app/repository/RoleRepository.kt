@@ -3,11 +3,13 @@ package com.dudegenuine.app.repository
 import com.dudegenuine.app.entity.RoleDto
 import com.dudegenuine.app.entity.Roles
 import com.dudegenuine.app.entity.UserDto
+import com.dudegenuine.app.entity.Users
 import com.dudegenuine.app.mapper.contract.IRoleMapper
 import com.dudegenuine.app.model.role.RoleCreateRequest
 import com.dudegenuine.app.repository.contract.IRoleRepository
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.NotFoundException
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -32,7 +34,7 @@ class RoleRepository(
             current = mStatus
             latest = mStatus
             createdAt = System.currentTimeMillis()
-            userDto = UserDto[UUID.fromString(mUserId)]
+            userId = EntityID(UUID.fromString(mUserId), Users) //UserDto[UUID.fromString(mUserId)]
         }
         dto.let(mapper::asResponse)
     }

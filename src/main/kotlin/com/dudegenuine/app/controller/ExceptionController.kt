@@ -1,9 +1,6 @@
 package com.dudegenuine.app.controller
 
-import com.dudegenuine.app.repository.validation.AlreadyExistException
-import com.dudegenuine.app.repository.validation.BadRequestException
-import com.dudegenuine.app.repository.validation.NotFoundException
-import com.dudegenuine.app.repository.validation.UnAuthorizationException
+import com.dudegenuine.app.repository.validation.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -31,6 +28,9 @@ private fun Route.configureThrowableRoutes(){
     }
     get("/authorization-failed"){
         throw UnAuthorizationException()
+    }
+    get("/internal-error-exception"){
+        throw InternalErrorException()
     }
 }
 private fun Route.configureStatusRoutes(){

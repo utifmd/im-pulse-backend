@@ -20,7 +20,7 @@ class UserRepository(
     init {
         transaction { SchemaUtils.create(Users) }
     }
-    override fun createUser(request: UserCreateRequest): UserCensorResponse = transaction {
+    override fun createUser(request: UserCreateRequest) = transaction {
         val (mFirstName, mLastName, mAuthId) = request
         val users = UserDto.find{ Users.authId eq UUID.fromString(mAuthId) }
         if(!users.empty()) throw AlreadyExistException()
@@ -32,7 +32,7 @@ class UserRepository(
             createdAt = System.currentTimeMillis()
             updatedAt = null
         }
-        dto.let(mapper::asUserCensorResponse)
+        dto.let(mapper::asUserHalfResponse)
     }
     override fun deleteUser(userId: String) = transaction {
         val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()
@@ -42,16 +42,16 @@ class UserRepository(
             id.toString()
         }
     }
-    override fun getUserCensorOrNull(userId: String) = transaction {
+    override fun getUserHalfOrNull(userId: String) = transaction {
         val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()
 
-        dto.let(mapper::asUserCensorResponse)
+        dto.let(mapper::asUserHalfResponse)
     }
-    override fun getUsersCensor(pageAndSize: Pair<Long, Int>) = transaction {
+    override fun getUsersHalf(pageAndSize: Pair<Long, Int>) = transaction {
         val (page, size) = pageAndSize
 
         UserDto.all()
             .limit(size, offset = page)
-            .map(mapper::asUserCensorResponse)
+            .map(mapper::asUserHalfResponse)
     }
 }

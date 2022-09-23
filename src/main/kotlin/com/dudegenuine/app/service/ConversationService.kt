@@ -4,9 +4,12 @@ import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_MESSAGE
 import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_TYPING
 import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.model.message.MessageCreateRequest
+import com.dudegenuine.app.model.participant.ParticipantCreateRequest
 import com.dudegenuine.app.repository.contract.IConversationRepository
 import com.dudegenuine.app.repository.contract.IMessageRepository
+import com.dudegenuine.app.repository.contract.IParticipantRepository
 import com.dudegenuine.app.repository.validation.BadRequestException
+import com.dudegenuine.app.repository.validation.InternalErrorException
 import com.dudegenuine.app.service.contract.IConversationService
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
@@ -19,13 +22,16 @@ import kotlinx.serialization.json.Json
  **/
 class ConversationService(
     private val converseRepository: IConversationRepository,
+    private val participantRepository: IParticipantRepository,
     private val messageRepository: IMessageRepository): IConversationService {
 
     override suspend fun onJoinConversation(
         session: ConversationSession) = with(session) {
         try {
-            val converseId = run(converseRepository::onSessionConnect)
-            socket.incoming.consumeEach { frame -> // observe session event
+            val converseId = converseRepository.onSessionConnect(this){ sender, recipient ->
+                participantRepository.requireCreateParticipants(sender, recipient)
+            }
+            socket.incoming.consumeEach { frame ->
                 if (frame is Frame.Text)
                     onBroadcastConverse(converseId, session, frame.readText())
             }
@@ -38,13 +44,12 @@ class ConversationService(
     }
     override fun listConversations(userId: String, pageAndSize: Pair<Long, Int>) =
         try { converseRepository.readConversations(userId, pageAndSize) } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw InternalErrorException(e.localizedMessage)
         }
     override fun removeConversation(conversationId: String) =
         try { converseRepository.deleteConversation(conversationId) } catch (e: Exception){
-            throw BadRequestException(e.localizedMessage)
+            throw InternalErrorException(e.localizedMessage)
         }
-
     private suspend fun onBroadcastConverse(
         converseId: String, session: ConversationSession, payload: String) = with(converseRepository) {
         try {

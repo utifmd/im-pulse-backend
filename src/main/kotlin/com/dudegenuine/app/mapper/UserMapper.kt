@@ -3,13 +3,11 @@ package com.dudegenuine.app.mapper
 import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.auth.AuthResponse
-import com.dudegenuine.app.model.file.Image
 import com.dudegenuine.app.model.role.RoleResponse
 import com.dudegenuine.app.model.device.DeviceResponse
-import com.dudegenuine.app.model.user.UserCensorResponse
-import com.dudegenuine.app.model.user.UserCompleteResponse
+import com.dudegenuine.app.model.image.ImageResponse
+import com.dudegenuine.app.model.user.UserResponse
 import com.dudegenuine.app.model.verifier.VerifierResponse
-import com.dudegenuine.app.repository.common.Utils
 
 /**
  * Sat, 03 Sep 2022
@@ -17,65 +15,58 @@ import com.dudegenuine.app.repository.common.Utils
  **/
 class UserMapper: IUserMapper {
     override fun asUserCompleteResponse(dto: UserDto) = with(dto){
-        UserCompleteResponse(
+        UserResponse(
             id = id.value.toString(),
             firstName = firstName,
             lastName = lastName,
-            about = null, //profileDto?.about?.ifBlank{ null },
-            profileStatus = null, //profileDto?.status?.ifBlank{ null },
-            region = null, //profileDto?.region?.ifBlank{ null },
-            profilePicture = null,//profileDto?.picture?.let(::asImage),
-            authResponse = authDto.let(::asAuth),
-            level = null, //levelDto?.status,
-            verifierResponse = emptyList(), //verifier?.map(::asVerifier) ?: emptyList(),
-            deviceRespons = emptyList(), //tokens?. map(::asToken) ?: emptyList(),
-            createdAt = createdAt.let(Utils::formattedDate),
-            updatedAt = updatedAt?.let(Utils::formattedDate)
-        )
-    }
-    override fun asUserCensorResponse(dto: UserDto) = with(dto){
-        UserCensorResponse(
-            id = id.value.toString(),
-            firstName = firstName,
-            lastName = lastName, //emailOrUsername = authDto.emailOrUsername,
-            profilePictureUrl = profileDto?.pictureDto?.url,
-            region = profileDto?.region,
-            level = roleDto?.current,
+            auth = authDto.let(::asAuthResponse),
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            about = profileDto?.about,
             status = profileDto?.status,
-            tokens = devices.map(DeviceDto::token), /*.limit()*/
-            createdAt = createdAt.let(Utils::formattedDate),
+            region = profileDto?.region,
+            picture = profileDto?.pictureDto?.let(::asImageResponse),
+            role = roleDto?.let(::asRoleResponse),
+            verifiers = verifiers.map(::asVerifierResponse),
+            devices = devices.map(::asDeviceResponse)
         )
     }
-    override fun asUserCompleteResponseOrNull(dto: UserDto?) = dto
-        ?.let(::asUserCompleteResponse)
 
-    override fun asUserCensorResponseOrNull(dto: UserDto?) = dto
-        ?.let(::asUserCensorResponse)
-
-    override fun asAuth(dto: AuthDto) = with(dto){
+    override fun asUserHalfResponse(dto: UserDto) = with(dto){
+        UserResponse(
+            id = id.value.toString(),
+            fullName = "$firstName $lastName",
+            pictureUrl = profileDto?.pictureDto?.url,
+            region = profileDto?.region,
+            role = roleDto?.current,
+            status = profileDto?.status,
+            devices = devices.map(DeviceDto::token),
+            createdAt = createdAt,
+        )
+    }
+    override fun asAuthResponse(dto: AuthDto) = with(dto){
         AuthResponse(
             authId = id.value.toString(),
             emailOrUsername = emailOrUsername,
             password = password,
             lastPassword = lastPassword,
-            updatedAt = updatedAt
-                ?.let(Utils::formattedDate),
+            updatedAt = updatedAt,
         )
     }
-    override fun asLevel(dto: RoleDto) = with(dto){
-        RoleResponse(status = current)
+    override fun asRoleResponse(dto: RoleDto) = with(dto){
+        RoleResponse(status = current, updatedAt = updatedAt)
     }
-    override fun asVerifier(dto: VerifierDto) = with(dto){
+    override fun asVerifierResponse(dto: VerifierDto) = with(dto){
         VerifierResponse(
             type = type,
             payload = payload,
             updatedAt = updatedAt
         )
     }
-    override fun asImage(dto: ImageDto) = with(dto){
-        Image(url, updatedAt)
+    override fun asImageResponse(dto: ImageDto) = with(dto){
+        ImageResponse(url, updatedAt)
     }
-    override fun asToken(dto: DeviceDto) = with(dto){
-        DeviceResponse(token, type)
+    override fun asDeviceResponse(dto: DeviceDto) = with(dto){
+        DeviceResponse(token, type, updatedAt)
     }
 }

@@ -11,6 +11,7 @@ import com.dudegenuine.app.model.device.DeviceResponse
 class DeviceMapper: IDeviceMapper {
     override fun asResponse(dto: DeviceDto) = DeviceResponse(
         token = dto.token,
-        type = dto.type
+        type = dto.type,
+        updatedAt = dto.updatedAt
     )
 }

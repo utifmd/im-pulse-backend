@@ -10,4 +10,5 @@ import kotlinx.serialization.Serializable
 data class DeviceResponse(
     val token: String,
     val type: String,
+    val updatedAt: Long?,
 )
