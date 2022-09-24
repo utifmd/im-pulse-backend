@@ -32,14 +32,14 @@ fun Route.chatConversation(
         service.onJoinConversation(session)
     }
 }
-fun Route.listConversations(
+fun Route.pagedConversations(
     service: IConversationService){
     get("api/conversations/{userId}"){
         val params = call.request.queryParameters
         val userId = call.parameters["userId"] ?: throw BadRequestException("userId")
         val page = params["page"]?.let(Integer::parseInt)?.toLong() ?: throw BadRequestException("page")
         val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException("size")
-        val response = service.listConversations(userId, page to size)
+        val response = service.pagedConversations(userId, page to size)
 
         call.respond(
             status = HttpStatusCode.OK,

@@ -12,5 +12,5 @@ data class ParticipantResponse(
     val role: String,
     val isRead: Boolean,
     val createdAt: Long,
-    val user: UserResponse
+    val user: UserResponse?
 )

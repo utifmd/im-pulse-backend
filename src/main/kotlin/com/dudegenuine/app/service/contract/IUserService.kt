@@ -10,6 +10,6 @@ import com.dudegenuine.app.model.user.UserResponse
 interface IUserService {
     fun addUser(createRequest: UserCreateRequest): UserResponse
     fun findUser(userId: String): UserResponse
-    fun listUsers(pageAndSize: Pair<Long, Int>): List<UserResponse>
+    fun pagedUsers(pageAndSize: Pair<Long, Int>): List<UserResponse>
     fun removeUser(userId: String): String
 }

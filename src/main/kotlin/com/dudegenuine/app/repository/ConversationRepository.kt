@@ -5,12 +5,14 @@ import com.dudegenuine.app.mapper.contract.IConversationMapper
 import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.model.participant.ParticipantCreateRequest
 import com.dudegenuine.app.repository.contract.IConversationRepository
+import com.dudegenuine.app.repository.contract.IParticipantRepository
 import com.dudegenuine.app.repository.contract.IParticipantRepository.Companion.RECIPIENT
 import com.dudegenuine.app.repository.contract.IParticipantRepository.Companion.SENDER
 import com.dudegenuine.app.repository.validation.NotFoundException
 import io.ktor.websocket.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -21,25 +23,26 @@ import java.util.concurrent.ConcurrentHashMap
  **/
 // TODO: all responses createdAt model change to long type
 class ConversationRepository(
-    private val mapper: IConversationMapper, database: Database): IConversationRepository {
+    private val mapper: IConversationMapper,
+    private val participantRepository: IParticipantRepository, database: Database): IConversationRepository {
     private val activeSessions = ConcurrentHashMap<String, WebSocketSession>() // key is every userId
     init {
         transaction { SchemaUtils.create(Conversations) }
     }
-    override fun onSessionConnect(
-        conversationSession: ConversationSession,
-        onRequireCreateParticipants: (sender: ParticipantCreateRequest, recipient: ParticipantCreateRequest) -> Unit): String {
-        val (_, mFrom, mTo, mSocket) = conversationSession
+    override fun onSessionConnect(session: ConversationSession/*, onRequireCreateParticipants: suspend Transaction.( ParticipantCreateRequest, ParticipantCreateRequest) -> Unit*/): String {
+        val (_, mFrom, mTo, mSocket) = session
 
         activeSessions[mFrom] = mSocket
         if (!activeSessions.containsKey(mTo)) activeSessions[mTo] = mSocket
 
-        val converseId = requireCreateConversation(conversationSession)
-        val sender = ParticipantCreateRequest(mFrom, converseId, SENDER)
-        val recipient = ParticipantCreateRequest(mTo, converseId, RECIPIENT)
+        return transaction {
+            val converseId = requireCreateConversation(session)
+            val sender = ParticipantCreateRequest(mFrom, converseId, SENDER)
+            val recipient = ParticipantCreateRequest(mTo, converseId, RECIPIENT)
 
-        onRequireCreateParticipants(sender, recipient)
-        return converseId
+            participantRepository.requireCreateParticipants(sender, recipient)//onRequireCreateParticipants(sender, recipient)
+            converseId
+        }
     }
     override suspend fun onSessionDisconnect(conversationSession: ConversationSession) {
         val (_, mFrom, _, mSocket) = conversationSession
@@ -61,23 +64,25 @@ class ConversationRepository(
         activeSessions[mFrom]
             ?.send(Frame.Text(encodedMessage))
     }
-    override fun requireCreateConversation(conversationSession: ConversationSession) = transaction {
+    private fun requireCreateConversation(conversationSession: ConversationSession): String /*= transaction*/ {
         val (mConverseIdOrNull, mUserId, mTargetUserId) = conversationSession
 
-        if (mConverseIdOrNull != null) return@transaction mConverseIdOrNull // got from chat list
+        if (mConverseIdOrNull != null) /*return@transaction*/ return mConverseIdOrNull // got from chat list
 
+        /* prevent race condition */
         val dto = ConversationDto.find{
             ((Conversations.userId eq UUID.fromString(mUserId)) and (Conversations.targetUserId eq UUID.fromString(mTargetUserId))) or
-                    ((Conversations.userId eq UUID.fromString(mTargetUserId)) and (Conversations.targetUserId eq UUID.fromString(mUserId))) } // [race condition] both create new in the sametime
+                    ((Conversations.userId eq UUID.fromString(mTargetUserId)) and (Conversations.targetUserId eq UUID.fromString(mUserId))) }
 
-        if (!dto.empty()) return@transaction dto.firstOrNull()?.id?.value.toString()
+        // [race condition] both create new in the sametime
+        if (!dto.empty()) /*return@transaction*/ return dto.firstOrNull()?.id?.value.toString()
 
         val conv = ConversationDto.new {
             createdAt = System.currentTimeMillis() //participants = ParticipantDto[UUID.fromString("")] isRead = false targetUserDto = UserDto[UUID.fromString(mTargetUserId)] userDto = UserDto[UUID.fromString(mUserId)]
             targetUserId = EntityID(UUID.fromString(mTargetUserId), Users)
             userId = EntityID(UUID.fromString(mUserId), Users)
         }
-        conv.id.value.toString() //val mConverseId =
+        return conv.id.value.toString()
     }
     override fun readConversations(
         userId: String, pageAndSize: Pair<Long, Int>) = transaction {

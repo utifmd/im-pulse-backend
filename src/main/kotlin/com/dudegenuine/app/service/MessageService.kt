@@ -26,7 +26,7 @@ class MessageService(
             throw InternalErrorException(e.localizedMessage)
         }
 
-    override fun listMessages(conversationsId: String, pageAndSize: Pair<Long, Int>) =
+    override fun pagedMessages(conversationsId: String, pageAndSize: Pair<Long, Int>) =
         try { repository.listMessage(conversationsId, pageAndSize) } catch (e: Exception){
             throw InternalErrorException(e.localizedMessage)
         }

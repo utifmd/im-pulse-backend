@@ -7,7 +7,6 @@ import io.ktor.server.application.*
 import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
-
     val authService: IAuthService by inject()
     val userService: IUserService by inject()
     val profileService: IProfileService by inject()
@@ -18,6 +17,7 @@ fun Application.configureRouting() {
     val contactService: IContactService by inject()
     val converseService: IConversationService by inject()
     val messageService: IMessageService by inject()
+    val blacklistService: IBlacklistService by inject()
 
     install(Routing){
         imageService.apply(::addImage)
@@ -25,13 +25,13 @@ fun Application.configureRouting() {
 
         with(converseService) {
             apply(::chatConversation)
-            apply(::listConversations)
             apply(::removeConversation)
+            apply(::pagedConversations)
         }
         with(messageService){
             apply(::addMessage)
             apply(::putMessage)
-            apply(::listMessages)
+            apply(::pagedMessages)
         }
         with(authService){
             apply(::signIn)
@@ -50,7 +50,7 @@ fun Application.configureRouting() {
             apply(::addUser)
             apply(::findUser)
             apply(::removeUser)
-            apply(::listUsers)
+            apply(::pagedUsers)
         }
         with(profileService){
             apply(::addProfile)
@@ -68,6 +68,11 @@ fun Application.configureRouting() {
         with(deviceService){
             apply(::addDevice)
             apply(::removeDevice)
+        }
+        with(blacklistService){
+            apply(::addBlacklist)
+            apply(::removeBlacklist)
+            apply(::pagedBlacklists)
         }
     }
 }

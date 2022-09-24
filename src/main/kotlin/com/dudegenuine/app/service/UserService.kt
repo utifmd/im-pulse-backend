@@ -13,7 +13,7 @@ import com.dudegenuine.app.service.contract.IUserService
  **/
 class UserService(
     private val repository: IUserRepository): IUserService {
-    override fun listUsers(pageAndSize: Pair<Long, Int>) =
+    override fun pagedUsers(pageAndSize: Pair<Long, Int>) =
         try{ repository.getUsersHalf(pageAndSize) } catch (e: Exception){
             throw InternalErrorException(e.localizedMessage)
         }

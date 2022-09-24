@@ -17,14 +17,13 @@ class ParticipantRepository(database: Database): IParticipantRepository {
     init {
         transaction { SchemaUtils.create(Participants) }
     }
-    override fun requireCreateParticipants(
-        vararg requests: ParticipantCreateRequest) = transaction {
+    override fun requireCreateParticipants(vararg requests: ParticipantCreateRequest) /*= transaction*/ {
         val mCreatedAt = System.currentTimeMillis()
         requests.forEach { (mUserId, mConverseId, mRole) ->
             val participants = ParticipantDto.find {
                 Participants.conversationId eq UUID.fromString(mConverseId)
             }
-            if (!participants.empty()) return@transaction
+            if (!participants.empty()) return/*@transaction*/
 
             ParticipantDto.new {
                 role = mRole

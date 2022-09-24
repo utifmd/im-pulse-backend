@@ -1,10 +1,7 @@
 package com.dudegenuine.plugins
 
 import com.dudegenuine.app.model.FailedResponse
-import com.dudegenuine.app.repository.validation.AlreadyExistException
-import com.dudegenuine.app.repository.validation.BadRequestException
-import com.dudegenuine.app.repository.validation.NotFoundException
-import com.dudegenuine.app.repository.validation.UnAuthorizationException
+import com.dudegenuine.app.repository.validation.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.statuspages.*
@@ -46,13 +43,16 @@ fun Application.configureException(){
                         message = cause.localizedMessage
                     )
                 )
-                is InternalError -> call.respond(
-                    HttpStatusCode.InternalServerError,
-                    FailedResponse(
-                        code = HttpStatusCode.InternalServerError.value,
-                        message = cause.localizedMessage
+                is InternalErrorException -> {
+                    println(cause.localizedMessage)
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        FailedResponse(
+                            code = HttpStatusCode.InternalServerError.value,
+                            message = "Oops! internal server error at our end"
+                        )
                     )
-                )
+                }
             }
         }
         status(

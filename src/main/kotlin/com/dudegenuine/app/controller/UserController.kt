@@ -49,13 +49,13 @@ fun Route.removeUser(
         )
     }
 }
-fun Route.listUsers(
+fun Route.pagedUsers(
     service: IUserService){
     get("/api/users") {
         val params = call.request.queryParameters
         val page = params["page"]?.let(Integer::parseInt)?.toLong() ?: throw BadRequestException("page")
         val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException("size")
-        val users = service.listUsers(page to size)
+        val users = service.pagedUsers(page to size)
 
         call.respond(
             status = HttpStatusCode.OK,

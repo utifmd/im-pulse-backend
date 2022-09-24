@@ -4,7 +4,7 @@ import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_MESSAGE
 import com.dudegenuine.app.entity.MessageDto.Companion.TYPE_TYPING
 import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.model.message.MessageCreateRequest
-import com.dudegenuine.app.model.participant.ParticipantCreateRequest
+import com.dudegenuine.app.repository.contract.IBlacklistRepository
 import com.dudegenuine.app.repository.contract.IConversationRepository
 import com.dudegenuine.app.repository.contract.IMessageRepository
 import com.dudegenuine.app.repository.contract.IParticipantRepository
@@ -23,26 +23,28 @@ import kotlinx.serialization.json.Json
 class ConversationService(
     private val converseRepository: IConversationRepository,
     private val participantRepository: IParticipantRepository,
+    private val blacklistRepository: IBlacklistRepository,
     private val messageRepository: IMessageRepository): IConversationService {
 
     override suspend fun onJoinConversation(
         session: ConversationSession) = with(session) {
         try {
-            val converseId = converseRepository.onSessionConnect(this){ sender, recipient ->
-                participantRepository.requireCreateParticipants(sender, recipient)
-            }
+            if (blacklistRepository.isAccessBlocked(session.from to session.to))
+                throw BadRequestException("sender was blocked.")
+            val converseId = converseRepository.onSessionConnect(this)/*{ sender, recipient -> participantRepository.requireCreateParticipants(sender, recipient) }*/
             socket.incoming.consumeEach { frame ->
                 if (frame is Frame.Text)
-                    onBroadcastConverse(converseId, session, frame.readText())
+                    onBroadcastConversation(converseId, session, frame.readText())
             }
+        } catch (e: BadRequestException){
+            socket.close(CloseReason(CloseReason.Codes.CANNOT_ACCEPT, e.localizedMessage))
         } catch (e: Exception){
-            e.printStackTrace()
             socket.close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, e.localizedMessage))
         } finally {
             converseRepository.onSessionDisconnect(this)
         }
     }
-    override fun listConversations(userId: String, pageAndSize: Pair<Long, Int>) =
+    override fun pagedConversations(userId: String, pageAndSize: Pair<Long, Int>) =
         try { converseRepository.readConversations(userId, pageAndSize) } catch (e: Exception){
             throw InternalErrorException(e.localizedMessage)
         }
@@ -50,7 +52,7 @@ class ConversationService(
         try { converseRepository.deleteConversation(conversationId) } catch (e: Exception){
             throw InternalErrorException(e.localizedMessage)
         }
-    private suspend fun onBroadcastConverse(
+    private suspend fun onBroadcastConversation(
         converseId: String, session: ConversationSession, payload: String) = with(converseRepository) {
         try {
             val (mConverseIdOrNull, mFrom, mTo) = session

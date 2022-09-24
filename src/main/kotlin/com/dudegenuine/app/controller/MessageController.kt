@@ -39,13 +39,13 @@ fun Route.putMessage(service: IMessageService){
         )
     }
 }
-fun Route.listMessages(service: IMessageService){
+fun Route.pagedMessages(service: IMessageService){
     get("api/messages/{conversationId}"){
         val params = call.request.queryParameters
         val conversationId = call.parameters["conversationId"] ?: throw BadRequestException("conversationId")
         val page = params["page"]?.let(Integer::parseInt)?.toLong() ?: throw BadRequestException("page")
         val size = params["size"]?.let(Integer::parseInt) ?: throw BadRequestException("page")
-        val response = service.listMessages(conversationId, page to size)
+        val response = service.pagedMessages(conversationId, page to size)
         call.respond(
             status = HttpStatusCode.OK,
             message = SuccessResponse(response)
