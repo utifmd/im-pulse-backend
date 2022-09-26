@@ -24,7 +24,7 @@ import java.util.UUID
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class BlacklistRepository(
-    private val mapper: IBlacklistMapper, database: Database): IBlacklistRepository {
+    private val mapper: IBlacklistMapper): IBlacklistRepository {
     init {
         transaction { SchemaUtils.create(Blacklists) }
     }

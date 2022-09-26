@@ -22,7 +22,6 @@ import kotlinx.serialization.json.Json
  **/
 class ConversationService(
     private val converseRepository: IConversationRepository,
-    private val participantRepository: IParticipantRepository,
     private val blacklistRepository: IBlacklistRepository,
     private val messageRepository: IMessageRepository): IConversationService {
 
@@ -31,7 +30,7 @@ class ConversationService(
         try {
             if (blacklistRepository.isAccessBlocked(session.from to session.to))
                 throw BadRequestException("sender was blocked.")
-            val converseId = converseRepository.onSessionConnect(this)/*{ sender, recipient -> participantRepository.requireCreateParticipants(sender, recipient) }*/
+            val converseId = converseRepository.onSessionConnect(this)
             socket.incoming.consumeEach { frame ->
                 if (frame is Frame.Text)
                     onBroadcastConversation(converseId, session, frame.readText())

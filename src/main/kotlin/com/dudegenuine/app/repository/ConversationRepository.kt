@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap
 // TODO: all responses createdAt model change to long type
 class ConversationRepository(
     private val mapper: IConversationMapper,
-    private val participantRepository: IParticipantRepository, database: Database): IConversationRepository {
+    private val participantRepository: IParticipantRepository): IConversationRepository {
     private val activeSessions = ConcurrentHashMap<String, WebSocketSession>() // key is every userId
     init {
         transaction { SchemaUtils.create(Conversations) }

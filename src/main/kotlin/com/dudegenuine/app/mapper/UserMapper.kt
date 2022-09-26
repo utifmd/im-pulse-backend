@@ -3,6 +3,7 @@ package com.dudegenuine.app.mapper
 import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.auth.AuthResponse
+import com.dudegenuine.app.model.contact.ContactResponse
 import com.dudegenuine.app.model.role.RoleResponse
 import com.dudegenuine.app.model.device.DeviceResponse
 import com.dudegenuine.app.model.image.ImageResponse
@@ -14,12 +15,12 @@ import com.dudegenuine.app.model.verifier.VerifierResponse
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class UserMapper: IUserMapper {
-    override fun asUserCompleteResponse(dto: UserDto) = with(dto){
+    override fun asUserResponse(dto: UserDto) = with(dto){
         UserResponse(
             id = id.value.toString(),
             firstName = firstName,
             lastName = lastName,
-            auth = authDto.let(::asAuthResponse),
+            contact = contactDto.let(::asContact),
             createdAt = createdAt,
             updatedAt = updatedAt,
             about = profileDto?.about,
@@ -27,12 +28,26 @@ class UserMapper: IUserMapper {
             region = profileDto?.region,
             picture = profileDto?.pictureDto?.let(::asImageResponse),
             role = roleDto?.let(::asRoleResponse),
-            verifiers = verifiers.map(::asVerifierResponse),
             devices = devices.map(::asDeviceResponse)
         )
     }
+    override fun asImageResponse(dto: ImageDto) = with(dto){
+        ImageResponse(url, updatedAt)
+    }
+    override fun asDeviceResponse(dto: DeviceDto) = with(dto){
+        DeviceResponse(token, type, updatedAt)
+    }
+    override fun asRoleResponse(dto: RoleDto) = with(dto){
+        RoleResponse(status = current, updatedAt = updatedAt)
+    }
 
-    override fun asUserHalfResponse(dto: UserDto) = with(dto){
+    override fun asContact(dto: ContactDto) = ContactResponse(
+        email = dto.email,
+        phone = dto.phone,
+        username = dto.username,
+        address = dto.address
+    )
+    /*override fun asUserHalfResponse(dto: UserDto) = with(dto){
         UserResponse(
             id = id.value.toString(),
             fullName = "$firstName $lastName",
@@ -53,20 +68,11 @@ class UserMapper: IUserMapper {
             updatedAt = updatedAt,
         )
     }
-    override fun asRoleResponse(dto: RoleDto) = with(dto){
-        RoleResponse(status = current, updatedAt = updatedAt)
-    }
     override fun asVerifierResponse(dto: VerifierDto) = with(dto){
         VerifierResponse(
             type = type,
             payload = payload,
             updatedAt = updatedAt
         )
-    }
-    override fun asImageResponse(dto: ImageDto) = with(dto){
-        ImageResponse(url, updatedAt)
-    }
-    override fun asDeviceResponse(dto: DeviceDto) = with(dto){
-        DeviceResponse(token, type, updatedAt)
-    }
+    }*/
 }

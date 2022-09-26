@@ -17,7 +17,7 @@ import java.util.UUID
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class DeviceRepository(
-    private val mapper: IDeviceMapper, database: Database): IDeviceRepository {
+    private val mapper: IDeviceMapper): IDeviceRepository {
     init {
         transaction { SchemaUtils.create(Devices) }
     }

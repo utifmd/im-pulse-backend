@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 data class UserCreateRequest(
     val firstName: String,
     val lastName: String,
+    val contactId: String,
     val authId: String
 
     /*val profileId: String?,

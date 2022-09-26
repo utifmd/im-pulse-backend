@@ -5,15 +5,14 @@ val exposed_version: String by project
 val koin_version: String by project
 val postgres_version: String by project
 val postgres_support_version: String by project
+val codec_version: String by project
+val thumbnail_version: String by project
 
 plugins {
     application
     kotlin("jvm") version "1.7.10"
     //id("io.ktor.plugin") version "2.1.0"
              id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
-
-    /*id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("java")*/
 }
 
 group = "com.dudegenuine"
@@ -48,7 +47,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("commons-codec:commons-codec:1.15")
+    implementation("net.coobird:thumbnailator:$thumbnail_version")
+    implementation("commons-codec:commons-codec:$codec_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 

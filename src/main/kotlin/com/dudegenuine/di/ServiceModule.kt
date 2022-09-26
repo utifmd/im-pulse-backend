@@ -47,7 +47,7 @@ val serviceModule = module {
     }
 
     single<IConversationService>{
-        ConversationService(get(), get(), get(), get())
+        ConversationService(get(), get(), get())
     }
 
     single<IBlacklistService> {

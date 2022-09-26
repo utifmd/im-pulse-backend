@@ -2,7 +2,9 @@ package com.dudegenuine.plugins
 
 import com.dudegenuine.di.*
 import io.ktor.server.application.*
+import org.jetbrains.exposed.sql.Database
 import org.koin.fileProperties
+import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 
 /**
@@ -19,4 +21,6 @@ fun Application.configureDependencyInjection(){
         modules(serviceModule)
         modules(dependencyModule)
     }
+    val database: Database by inject()
+    println("database vendor ${database.vendor}")
 }

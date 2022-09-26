@@ -28,7 +28,7 @@ class AuthRepository(
     private val mapper: IAuthMapper,
     private val tokenDependency: ITokenDependency,
     private val hashDependency: IHashDependency,
-    private val authTokenConfig: AuthTokenConfig, database: Database): IAuthRepository {
+    private val authTokenConfig: AuthTokenConfig): IAuthRepository {
     init {
         transaction { SchemaUtils.create(Auths) }
     }

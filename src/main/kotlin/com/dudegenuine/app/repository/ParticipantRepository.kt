@@ -13,7 +13,7 @@ import java.util.UUID
  * Fri, 16 Sep 2022
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
-class ParticipantRepository(database: Database): IParticipantRepository {
+class ParticipantRepository: IParticipantRepository {
     init {
         transaction { SchemaUtils.create(Participants) }
     }

@@ -2,6 +2,7 @@ package com.dudegenuine.app.repository
 
 import com.dudegenuine.app.entity.ContactDto
 import com.dudegenuine.app.entity.Contacts
+import com.dudegenuine.app.entity.Users
 import com.dudegenuine.app.mapper.contract.IContactMapper
 import com.dudegenuine.app.model.contact.ContactCreateRequest
 import com.dudegenuine.app.model.contact.ContactResponse
@@ -9,6 +10,7 @@ import com.dudegenuine.app.model.contact.ContactUpdateRequest
 import com.dudegenuine.app.repository.contract.IContactRepository
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.NotFoundException
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.or
@@ -20,7 +22,7 @@ import java.util.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class ContactRepository(
-    private val mapper: IContactMapper, database: Database): IContactRepository {
+    private val mapper: IContactMapper): IContactRepository {
     init {
         transaction { SchemaUtils.create(Contacts) }
     }

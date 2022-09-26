@@ -19,7 +19,7 @@ import java.util.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class MessageRepository(
-    private val mapper: IMessageMapper, database: Database): IMessageRepository {
+    private val mapper: IMessageMapper): IMessageRepository {
     init {
         transaction { SchemaUtils.create(Messages) }
     }

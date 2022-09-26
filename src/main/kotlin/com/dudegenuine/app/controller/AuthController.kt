@@ -46,14 +46,14 @@ fun Route.signIn(
 fun Route.claimAuthId(){
     authenticate {
         get("api/auth/claim-auth-id"){
-            val userId = try {
+            val authId = try {
                 call.principal<JWTPrincipal>()?.getClaim("authId", String::class)
             } catch (e: Exception){
                 throw UnAuthorizationException(e.localizedMessage)
             }
             call.respond(
                 HttpStatusCode.OK,
-                SuccessResponse(userId)
+                SuccessResponse(authId)
             )
         }
     }

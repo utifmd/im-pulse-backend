@@ -12,9 +12,9 @@ import java.util.UUID
  **/
 object Contacts: UUIDTable("contacts"){
     val email = varchar("email", 127)
-    val phone = varchar("phone", 28)
+    val phone = varchar("phone", 28).nullable()
     val username = varchar("username", 45)
-    val address = varchar("address", 127)
+    val address = varchar("address", 127).nullable()
 }
 class ContactDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var email by Contacts.email

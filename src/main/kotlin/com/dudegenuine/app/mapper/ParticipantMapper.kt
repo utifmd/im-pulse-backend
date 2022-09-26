@@ -17,7 +17,7 @@ class ParticipantMapper(
             role = dto.role,
             isRead = dto.isRead,
             createdAt = dto.createdAt,
-            user = dto.userDto?.let(userMapper::asUserHalfResponse)
+            user = dto.userDto?.let(userMapper::asUserResponse)
         )
     }
 }

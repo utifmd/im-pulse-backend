@@ -17,7 +17,7 @@ import java.util.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class ImageRepository(
-    private val mapper: IImageMapper, database: Database): IImageRepository {
+    private val mapper: IImageMapper): IImageRepository {
     init {
         transaction { SchemaUtils.create(Images) }
     }

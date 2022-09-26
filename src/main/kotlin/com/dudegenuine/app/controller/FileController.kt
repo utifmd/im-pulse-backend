@@ -18,13 +18,14 @@ fun Route.addFile(
 
     post("api/files") {
         val fileMultipartData = try{ call.receiveMultipart() } catch (e: Exception){
-            throw BadRequestException()
+            throw BadRequestException(e.localizedMessage)
         }
-        val fileId = service.uploadFile(fileMultipartData)
+        val compressRequest = call.request.queryParameters["compress"]?.toBoolean() ?: false
+        val response = service.uploadFileImage(fileMultipartData, compressRequest)
 
         call.respond(
             status = HttpStatusCode.OK,
-            message = SuccessResponse(fileId)
+            message = SuccessResponse(response)
         )
     }
 }

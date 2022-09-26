@@ -16,18 +16,18 @@ import org.koin.dsl.module
  **/
 
 val repositoryModule = module {
-    single<IAuthRepository>{ AuthRepository(get(), get(), get(), get(), get()) }
-    single<IUserRepository>{ UserRepository(get(), get()) }
-    single<IProfileRepository>{ ProfileRepository(get(), get()) }
-    single<IFileRepository>{ FileRepository(get(), get()) }
-    single<IRoleRepository>{ RoleRepository(get(), get()) }
-    single<IImageRepository>{ ImageRepository(get(), get()) }
-    single<IDeviceRepository>{ DeviceRepository(get(), get()) }
-    single<IContactRepository>{ ContactRepository(get(), get()) }
-    single<IMessageRepository>{ MessageRepository(get(), get()) }
-    single<IConversationRepository>{ ConversationRepository(get(), get(), get()) }
-    single<IParticipantRepository>{ ParticipantRepository(get()) }
-    single<IBlacklistRepository>{ BlacklistRepository(get(), get()) }
+    single<IAuthRepository>{ AuthRepository(get(), get(), get(), get()) }
+    single<IUserRepository>{ UserRepository(get()) }
+    single<IProfileRepository>{ ProfileRepository(get()) }
+    single<IFileRepository>{ FileRepository(get()) }
+    single<IRoleRepository>{ RoleRepository(get()) }
+    single<IImageRepository>{ ImageRepository(get()) }
+    single<IDeviceRepository>{ DeviceRepository(get()) }
+    single<IContactRepository>{ ContactRepository(get()) }
+    single<IMessageRepository>{ MessageRepository(get()) }
+    single<IConversationRepository>{ ConversationRepository(get(), get()) }
+    single<IParticipantRepository>{ ParticipantRepository() }
+    single<IBlacklistRepository>{ BlacklistRepository(get()) }
 }
 
 val mapperModule = module {

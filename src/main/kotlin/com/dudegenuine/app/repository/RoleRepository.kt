@@ -20,7 +20,7 @@ import java.util.UUID
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class RoleRepository(
-    private val mapper: IRoleMapper, database: Database): IRoleRepository {
+    private val mapper: IRoleMapper): IRoleRepository {
     init {
         transaction { SchemaUtils.create(Roles) }
     }

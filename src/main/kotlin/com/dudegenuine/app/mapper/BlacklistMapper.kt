@@ -15,7 +15,7 @@ class BlacklistMapper(
     override fun asResponse(dto: BlacklistDto) = BlacklistResponse(
         blacklistId = dto.id.value.toString(),
         targetUserId = dto.targetUserDto?.id?.value.toString(),
-        targetUser = dto.targetUserDto?.let(userMapper::asUserHalfResponse),
+        targetUser = dto.targetUserDto?.let(userMapper::asUserResponse),
         userId = dto.userId.value.toString(),
     )
 }

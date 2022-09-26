@@ -8,7 +8,10 @@ import com.dudegenuine.app.model.user.*
  **/
 interface IUserRepository {
     fun createUser(request: UserCreateRequest): UserResponse
+    fun readUser(userId: String): UserResponse?
+    fun readUsers(pageAndSize: Pair<Long, Int>): List<UserResponse>
     fun deleteUser(userId: String): String
-    fun getUserHalfOrNull(userId: String): UserResponse?
-    fun getUsersHalf(pageAndSize: Pair<Long, Int>): List<UserResponse>
+
+    /*fun getUserHalfOrNull(userId: String): UserResponse?
+    fun getUsersHalf(pageAndSize: Pair<Long, Int>): List<UserResponse>*/
 }

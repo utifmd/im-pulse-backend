@@ -12,10 +12,12 @@ import java.util.UUID
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 object Users: UUIDTable("users"){
-    val firstName = varchar("first_name", 127)
-    val lastName = varchar("last_name", 127)
+    val firstName = varchar("first_name", 127).nullable()
+    val lastName = varchar("last_name", 127).nullable()
     val createdAt = long("created_at")
     val updatedAt = long("updated_at").nullable()
+
+    val contactId = reference("contact_id", Contacts)
     val authId = reference("auth_id", Auths, ReferenceOption.CASCADE)
 }
 class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
@@ -28,9 +30,10 @@ class UserDto(id: EntityID<UUID>): Entity<UUID>(id) {
     val profileDto by ProfileDto optionalBackReferencedOn Profiles.userId
     val roleDto by RoleDto optionalBackReferencedOn Roles.userId
     val devices by DeviceDto referrersOn Devices.userId
-    val verifiers by VerifierDto referrersOn Verifications.userId //val tokenDto by TokenDto via Tokens
+    /*val verifiers by VerifierDto referrersOn Verifications.userId //val tokenDto by TokenDto via Tokens*/
 
     /* this class as child */
-    var authDto by AuthDto referencedOn Users.authId
+    var contactDto by ContactDto referencedOn Users.contactId
+    var authId by Users.authId //var authDto by AuthDto referencedOn Users.authId
     companion object: EntityClass<UUID, UserDto>(Users)
 }

@@ -19,7 +19,7 @@ import java.util.*
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class ProfileRepository(
-    private val mapper: IProfileMapper, database: Database): IProfileRepository {
+    private val mapper: IProfileMapper): IProfileRepository {
 
     init {
         transaction{ SchemaUtils.create(Profiles) }

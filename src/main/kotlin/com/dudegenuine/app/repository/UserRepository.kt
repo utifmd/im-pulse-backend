@@ -6,6 +6,7 @@ import com.dudegenuine.app.model.user.*
 import com.dudegenuine.app.repository.contract.IUserRepository
 import com.dudegenuine.app.repository.validation.AlreadyExistException
 import com.dudegenuine.app.repository.validation.NotFoundException
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,23 +17,24 @@ import java.util.UUID
  * com.dudegenuine.im-pulse-backend by utifmd
  **/
 class UserRepository(
-    private val mapper: IUserMapper, database: Database): IUserRepository {
+    private val mapper: IUserMapper): IUserRepository {
     init {
         transaction { SchemaUtils.create(Users) }
     }
     override fun createUser(request: UserCreateRequest) = transaction {
-        val (mFirstName, mLastName, mAuthId) = request
+        val (mFirstName, mLastName, mContactId, mAuthId) = request
         val users = UserDto.find{ Users.authId eq UUID.fromString(mAuthId) }
         if(!users.empty()) throw AlreadyExistException()
 
         val dto = UserDto.new {
             firstName = mFirstName
             lastName = mLastName
-            authDto = AuthDto[UUID.fromString(mAuthId)]
             createdAt = System.currentTimeMillis()
             updatedAt = null
+            contactDto = ContactDto[UUID.fromString(mContactId)]
+            authId = EntityID(UUID.fromString(mAuthId), Auths)
         }
-        dto.let(mapper::asUserHalfResponse)
+        dto.let(mapper::asUserResponse)
     }
     override fun deleteUser(userId: String) = transaction {
         val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()
@@ -42,16 +44,16 @@ class UserRepository(
             id.toString()
         }
     }
-    override fun getUserHalfOrNull(userId: String) = transaction {
+    override fun readUser(userId: String) = transaction {
         val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()
 
-        dto.let(mapper::asUserHalfResponse)
+        dto.let(mapper::asUserResponse)
     }
-    override fun getUsersHalf(pageAndSize: Pair<Long, Int>) = transaction {
+    override fun readUsers(pageAndSize: Pair<Long, Int>) = transaction {
         val (page, size) = pageAndSize
 
         UserDto.all()
             .limit(size, offset = page)
-            .map(mapper::asUserHalfResponse)
+            .map(mapper::asUserResponse)
     }
 }
