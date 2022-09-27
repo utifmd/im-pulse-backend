@@ -2,6 +2,7 @@ package com.dudegenuine.app.mapper.contract
 
 import com.dudegenuine.app.entity.FileDto
 import com.dudegenuine.app.model.file.File
+import com.dudegenuine.app.model.file.FileResponse
 import io.ktor.http.content.*
 
 /**
@@ -11,4 +12,6 @@ import io.ktor.http.content.*
 interface IFileMapper {
     fun asFile(dto: FileDto): File
     fun asFileOrNull(dto: FileDto?): File?
+
+    fun asResponse(dto: FileDto): FileResponse
 }

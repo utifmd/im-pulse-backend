@@ -11,7 +11,6 @@ import io.ktor.http.content.*
 interface IFileService {
     fun readFile(id: String): File
     fun deleteFile(id: String): String
-    suspend fun uploadFileImage(filePartData: MultiPartData, compress: Boolean = false): FileResponse
-    /*suspend fun uploadFile(filePartData: MultiPartData, compress: Boolean): FileResponse
-    suspend fun uploadImageFile(filePartData: MultiPartData): List<FileResponse>*/
+    //suspend fun uploadFileImage(filePartData: MultiPartData, compress: Boolean = false): FileResponse
+    suspend fun uploadImageFile(filePartData: MultiPartData): List<FileResponse> /*suspend fun uploadFile(filePartData: MultiPartData, compress: Boolean): FileResponse*/
 }

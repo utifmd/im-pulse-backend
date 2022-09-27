@@ -19,25 +19,11 @@ class FileService(
     override fun deleteFile(id: String) = try { id.let(repository::deleteFile) } catch (e: Exception){
         throw InternalErrorException(e.localizedMessage)
     }
-    override suspend fun uploadFileImage(filePartData: MultiPartData, compress: Boolean) = try{
-        repository.createImageFile(filePartData, compress) } catch (e: Exception){
-        throw InternalErrorException(e.localizedMessage)
-    }
-
-    /*override suspend fun uploadFile(filePartData: MultiPartData, compress: Boolean): FileResponse {
-        TODO("Not yet implemented")
-    }
     override suspend fun uploadImageFile(filePartData: MultiPartData) = try{
-        filePartData.readPart()?.let { partData ->
-            val mType = partData.contentType
-                ?. contentType
-                ?: throw BadRequestException("contentType")
-
-            if (partData is PartData.FileItem)
-                repository.createImageAndThumbnailFile(mType, partData.streamProvider())
-            else emptyList()
-        } ?: throw BadRequestException()
+        filePartData.readPart()
+            ?. let{ if (it is PartData.FileItem) repository.createImageAndThumbnailFile(it) else emptyList() }
+            ?: throw BadRequestException()
     } catch (e: Exception){
         throw InternalErrorException(e.localizedMessage)
-    }*/
+    }
 }

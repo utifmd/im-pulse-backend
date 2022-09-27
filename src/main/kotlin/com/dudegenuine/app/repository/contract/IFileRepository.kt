@@ -16,6 +16,6 @@ interface IFileRepository {
     }
     fun readFile(id: String): File
     fun deleteFile(id: String): String
-    suspend fun createImageFile(multiPartData: MultiPartData, compress: Boolean = false): FileResponse
-    /*suspend fun createImageAndThumbnailFile(contentType: String, inputStream: InputStream): List<FileResponse>*/
+    //suspend fun createImageFile(multiPartData: MultiPartData, compress: Boolean = false): FileResponse
+    suspend fun createImageAndThumbnailFile(partData: PartData.FileItem): List<FileResponse>
 }

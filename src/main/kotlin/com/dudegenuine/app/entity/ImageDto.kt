@@ -13,11 +13,13 @@ import java.util.UUID
  **/
 object Images: UUIDTable("images"){
     val url = varchar("url", 225)
+    val role = varchar("role", 25)
     val updatedAt = long("updated_at").nullable()
     val profileId = reference("profile_id", Profiles, ReferenceOption.CASCADE).nullable()
 }
 class ImageDto(id: EntityID<UUID>): Entity<UUID>(id) {
     var url by Images.url
+    var role by Images.role
     var updatedAt by Images.updatedAt
     var profileId by Images.profileId //ProfileDto optionalReferencedOn Images.profileId
     companion object: EntityClass<UUID, ImageDto>(Images)

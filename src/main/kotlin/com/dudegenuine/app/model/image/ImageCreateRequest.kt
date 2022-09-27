@@ -9,5 +9,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ImageCreateRequest(
     val url: String,
+    val role: String,
     val profileId: String,
 )

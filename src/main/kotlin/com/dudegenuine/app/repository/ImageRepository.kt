@@ -24,6 +24,7 @@ class ImageRepository(
     override fun createImage(request: ImageCreateRequest) = transaction {
         val dto = ImageDto.new {
             url = request.url
+            role = request.role
             profileId = EntityID(UUID.fromString(request.profileId), Users) //ProfileDto[UUID.fromString(request.profileId)]
             updatedAt = null
         }
