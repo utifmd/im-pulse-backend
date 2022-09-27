@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class MessageResponse(
-    val id: String,
+    val messageId: String,
     val text: String,
     val type: String,
     val createdAt: Long,

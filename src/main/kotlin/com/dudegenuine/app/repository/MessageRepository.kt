@@ -48,14 +48,12 @@ class MessageRepository(
     }
 
     override fun updateMessage(request: MessageUpdateRequest) = transaction {
-        val (mMessageId, mText, mType, mCreatedAt, _, mDeletedAt) = request
+        val (mMessageId, mText, mType) = request
         val messages = MessageDto.findById(UUID.fromString(mMessageId)) ?: throw NotFoundException()
         val dto = messages.apply {
             text = mText
             type = mType
-            createdAt = mCreatedAt
             updatedAt = System.currentTimeMillis()
-            deletedAt = mDeletedAt
         }
         dto.let(mapper::asResponse)
     }

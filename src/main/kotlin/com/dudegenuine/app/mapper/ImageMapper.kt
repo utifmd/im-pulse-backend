@@ -11,6 +11,7 @@ import com.dudegenuine.app.model.image.ImageResponse
 class ImageMapper: IImageMapper {
     override fun asResponse(dto: ImageDto) = ImageResponse(
         url = dto.url,
+        role = dto.role,
         updatedAt = dto.updatedAt
     )
 }

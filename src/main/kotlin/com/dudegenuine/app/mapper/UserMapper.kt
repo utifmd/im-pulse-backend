@@ -32,7 +32,7 @@ class UserMapper: IUserMapper {
         )
     }
     override fun asImageResponse(dto: ImageDto) = with(dto){
-        ImageResponse(url, updatedAt)
+        ImageResponse(url, role, updatedAt)
     }
     override fun asDeviceResponse(dto: DeviceDto) = with(dto){
         DeviceResponse(token, type, updatedAt)
@@ -42,6 +42,7 @@ class UserMapper: IUserMapper {
     }
 
     override fun asContact(dto: ContactDto) = ContactResponse(
+        contactId = dto.id.value.toString(),
         email = dto.email,
         phone = dto.phone,
         username = dto.username,

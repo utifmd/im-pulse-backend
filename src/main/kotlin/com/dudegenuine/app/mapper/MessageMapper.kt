@@ -10,7 +10,7 @@ import com.dudegenuine.app.model.message.MessageResponse
  **/
 class MessageMapper: IMessageMapper {
     override fun asResponse(dto: MessageDto) = MessageResponse(
-        id = dto.id.value.toString(),
+        messageId = dto.id.value.toString(),
         text = dto.text,
         type = dto.type,
         createdAt = dto.createdAt,

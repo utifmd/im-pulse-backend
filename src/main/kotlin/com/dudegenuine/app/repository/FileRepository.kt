@@ -56,7 +56,7 @@ class FileRepository(
                 data = mData
             }
             if (idx != 0) responses.add(dto.let(mapper::asResponse))
-            else responses.add(mapper.asResponse(dto).copy(role = THUMBNAIL))
+            else responses.add(dto.let(mapper::asResponse).copy(role = THUMBNAIL))
         }
         partData.dispose()
         responses

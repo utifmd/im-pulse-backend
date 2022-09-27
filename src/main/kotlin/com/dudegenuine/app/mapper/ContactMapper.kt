@@ -10,6 +10,7 @@ import com.dudegenuine.app.model.contact.ContactResponse
  **/
 class ContactMapper: IContactMapper {
     override fun asResponse(dto: ContactDto) = ContactResponse(
+        contactId = dto.id.value.toString(),
         email = dto.email,
         phone = dto.phone,
         username = dto.username,

@@ -9,5 +9,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ImageResponse(
     val url: String,
+    val role: String,
     val updatedAt: Long?
 )

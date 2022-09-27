@@ -1,142 +1,447 @@
 # im-pulse-backend JSON REST API
 
-## User
-### READ User
-Request:
-- Method: GET
-- Endpoint: `/api/users/{userId}`
-- Header:
-  - Accept: application/json
-Response:
-```json
-{
-  "data": {
-    "id": "String, Unique",
-    "fullName": "String",
-    "pictureUrl": "String, Nullable",
-    "role": "Role, Nullable",
-    "status": "String, Nullable",
-    "region": "String, Nullable",
-    "devices": [],
-    "createdAt": 1663334592916,
-    "about": null,
-    "auth": null,
-    "verifiers": null,
-    "updatedAt": null
-  }
-}
-```
-### CREATE User
+## Auth
+## Blacklist
+### CREATE Blacklist
 Request:
 - Method: POST
-- Endpoint: `/api/users`
+- Endpoint: `/api/blacklists`
 - Header:
-    - Content-Type: application/json
-    - Accept: application/json
+  - Content-Type: `application/json`
+  - Accept: `application/json`
 - Body:
-```json
-{
-  "userId": "String, Unique",
-  "fullName": "String",
-  "email": "String",
-  "phone": "String",
-  "username": "String",
-  "password": "String"
-}
-```
+  ```json
+  {
+    "targetUserId": "String, Foreign Unique UUID",
+    "userId": "String, Foreign Unique UUID"
+  }
+  ```
 Response:
 ```json
 {
-  "code": "Number",
-  "status": "String",
   "data": {
-    "userId": "String, Unique",
-    "fullName": "String",
-    "email": "String",
-    "phone": "String",
-    "username": "String",
-    "createdAt": "Date",
-    "updatedAt":"Date"
+    "blacklistId": "String, Primary Unique UUID",
+    "targetUser": "User, Nullable",
+    "targetUserId": "String, Foreign Unique UUID",
+    "userId": "String, Foreign Unique UUID"
   }
 }
 ```
-### Update User
-Request:
-- Method: PUT
-- Endpoint: `/api/users/{userId}`
-- Header:
-    - X-Api-Key: "utif.pages.dev"
-    - Content-Type: application/json
-    - Accept: application/json
-- Body:
-```json
-{
-  "fullName": "String",
-  "email": "String",
-  "phone": "String",
-  "username": "String",
-  "password": "String"
-}
-```
-Response:
-```json
-{
-  "code": "Number",
-  "status": "String",
-  "data": {
-    "userId": "String, Unique",
-    "fullName": "String",
-    "email": "String",
-    "phone": "String",
-    "username": "String",
-    "password": "String",
-    "createdAt": "Date",
-    "updatedAt": "Date"
-  }
-}
-```
-### Delete User
+### REMOVE Blacklists
 Request:
 - Method: DELETE
-- Endpoint: `/api/users/{userId}`
-- Header:
-    - X-Api-Key: "utif.pages.dev"
-    - Accept: application/json
+- Endpoint: `/api/blacklists/{blacklistId}`
 
 Response:
 ```json
 {
-  "code": "Number",
-  "status": "String"
+  "data": "String, Primary Unique UUID"
 }
 ```
-### List Users
+### LIST Blacklists
 Request:
 - Method: GET
-- Endpoint: `/api/users`
+- Endpoint: `/api/blacklists/{userId}`
 - Header:
-    - X-Api-Key: "utif.pages.dev"
-    - Accept: application/json
-- Query Param:
-    - size: Number,
-    - page: Number
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Params:
+  - page: `Integer`
+  - size: `Integer`
 
 Response:
 ```json
 {
-  "code": "Number",
-  "status": "String",
   "data": [
     {
-      "userId": "String, Unique",
-      "fullName": "String",
-      "email": "String",
-      "phone": "String",
-      "username": "String",
-      "createdAt": "Date",
-      "updatedAt": "Date",
-      "room": ["Room"]
+      "blacklistId": "String, Primary Unique UUID",
+      "targetUser": "User, Nullable",
+      "targetUserId": "String, Foreign Unique UUID",
+      "userId": "String, Foreign Unique UUID"
     }
   ]
 }
 ```
+## Contact
+### CREATE Contact
+Request:
+- Method: POST
+- Endpoint: `/api/contacts`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "email": "String",
+    "phone": "String",
+    "username": "String",
+    "address": "String"
+  }
+  ```
+Response:
+```json
+{
+  "contactId": "String, Primary Unique UUID",
+  "email": "String",
+  "phone": "String",
+  "username": "String",
+  "address": "String"
+}
+```
+### UPDATE Contact
+Request:
+- Method: PUT
+- Endpoint: `/api/contacts`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "contactId": "String, Primary Unique UUID",
+    "email": "String",
+    "phone": "String",
+    "username": "String",
+    "address": "String"
+  }
+  ```
+Response:
+```json
+{
+  "contactId": "String, Primary Unique UUID",
+  "email": "String",
+  "phone": "String",
+  "username": "String",
+  "address": "String"
+}
+```
+## Conversation
+### REMOVE Conversation
+Request:
+- Method: DELETE
+- Endpoint: `/api/conversations/{conversationId}`
+
+Response:
+```json
+{
+  "data": "String, Primary UUID Key"
+}
+```
+### LIST Conversation
+Request:
+- Method: GET
+- Endpoint: `/api/conversations/{}`
+- Param:
+  - page: `Integer`
+  - size: `Integer`
+
+Response:
+```json
+{
+  "data": [
+    {
+      "conversationId":  "String, Primary UUID Key",
+      "createdAt":  "Long",
+      "participants":  ["Participant"],
+      "userId":  "String, Foreign UUID Key"
+    }
+  ]
+}
+```
+## Device
+### CREATE Device
+Request:
+- Method: POST
+- Endpoint: `/api/devices`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "token": "String",
+    "type": "String",
+    "userId": "String, Foreign UUID Key"
+  }
+  ```
+Response:
+
+```json
+{
+  "data": {
+    "token": "String",
+    "type": "String",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+### DELETE Device
+Request:
+- Method: DELETE
+- Endpoint: `/api/devices/{deviceId}`
+
+Response:
+```json
+{
+  "data": "String, Unique"
+}
+```
+## File
+### CREATE File
+Request:
+- Method: POST
+- Endpoint: `/api/files/{fileId}`
+- Header:
+  - Content-Type: `multipart/form-data`
+  - Accept: `image/*`
+  
+Response: 
+```json
+{
+    "data": [
+        {
+            "id": "String, Unique",
+            "type": "String",
+            "role": "String, Enum(ORIGINAL, THUMBNAIL)"
+        },
+        {
+            "id": "String, Unique",
+            "type": "String",
+            "role": "String, Enum(ORIGINAL, THUMBNAIL)"
+        }
+    ]
+}
+```
+### READ File
+Request:
+- Method: GET
+- Endpoint: `/api/files/{fileId}`
+- Header:
+  - Content-Type: `*/*`
+
+Response:
+- Header:
+  - Content-Type: `image/*`
+### DELETE File
+Request:
+- Method: DELETE
+- Endpoint: `/api/files/{fileId}`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+  
+Response:
+```json
+{
+    "data": "String, Unique"
+}
+```
+## Image
+### CREATE Image
+Request:
+- Method: POST
+- Endpoint: `/api/images`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "url": "String",
+    "role": "String, Enum(ORIGINAL, THUMBNAIL)",
+    "profileId": "String, Foreign Unique UUID"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "url": "String",
+    "role": "String, Enum(ORIGINAL, THUMBNAIL)",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+## Message
+### CREATE Message
+Request:
+- Method: POST
+- Endpoint: `/api/messages`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "text": "String",
+    "type": "String, Enum(MESSAGE, TYPING)"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "messageId": "String, Primary UUID Key",
+    "text": "String",
+    "type": "String, Enum(MESSAGE, TYPING)",
+    "createdAt": "Long",
+    "updatedAt": "Long, Nullable",
+    "deletedAt": "Long, Nullable",
+    "userId": "String, Foreign UUID Key"
+  }
+}
+```
+### UPDATE Message
+Request:
+- Method: PUT
+- Endpoint: `/api/messages`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "messageId": "String, Primary UUID Key",
+    "text": "String",
+    "type": "String, Enum(MESSAGE, TYPING)"
+  }
+  ```
+  
+Response:
+```json
+{
+  "data": {
+    "messageId": "String, Primary UUID Key",
+    "text": "String",
+    "type": "String, Enum(MESSAGE, TYPING)",
+    "createdAt": "Long",
+    "updatedAt": "Long, Nullable",
+    "deletedAt": "Long, Nullable",
+    "userId": "String, Foreign UUID Key"
+  }
+}
+```
+### LIST Message
+Request:
+- Method: GET
+- Endpoint: `/api/messages/{userId}`
+- Params:
+  - page: `Integer`
+  - size: `Integer`
+
+Response:
+```json
+{
+  "data": [
+    {
+      "messageId": "String, Primary UUID Key",
+      "text": "String",
+      "type": "String, Enum(MESSAGE, TYPING)",
+      "createdAt": "Long",
+      "updatedAt": "Long, Nullable",
+      "deletedAt": "Long, Nullable",
+      "userId": "String, Foreign UUID Key"
+    }
+  ]
+}
+```
+## Profile
+### CREATE Profile
+Request:
+- Method: POST
+- Endpoint: `/api/profiles`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "about": "String",
+    "status": "String",
+    "region": "String",
+    "userId": "String, Foreign UUID Key"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "about": "String",
+    "status": "String",
+    "region": "String",
+    "pictureUrl": "Long, Nullable",
+    "pictureUpdatedAt": "Long, Nullable",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+### UPDATE Profile
+Request:
+- Method: PUT
+- Endpoint: `/api/profiles`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "id": "String, Primary Unique UUID Key",
+    "about": "String",
+    "status": "String",
+    "region": "String"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "about": "String",
+    "status": "String",
+    "region": "String",
+    "pictureUrl": "Long, Nullable",
+    "pictureUpdatedAt": "Long, Nullable",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+## Role
+### CREATE Role
+Request:
+- Method: POST
+- Endpoint: `/api/roles`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "status": "String",
+    "userId": "String, Foreign Unique UUID"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "status": "String",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+### READ Role
+Request:
+- Method: GET
+- Endpoint: `/api/roles/{roleId}`
+
+Response:
+```json
+{
+  "data": {
+    "status": "String",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+## User
+## Verifier

@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
  **/
 @Serializable
 data class ContactResponse(
+    val contactId: String,
     val email: String,
     val phone: String?,
     val username: String,
