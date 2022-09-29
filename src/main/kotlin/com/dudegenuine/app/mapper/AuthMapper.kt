@@ -3,7 +3,6 @@ package com.dudegenuine.app.mapper
 import com.dudegenuine.app.entity.AuthDto
 import com.dudegenuine.app.mapper.contract.IAuthMapper
 import com.dudegenuine.app.model.auth.AuthResponse
-import com.dudegenuine.app.repository.common.Utils
 
 /**
  * Fri, 09 Sep 2022
@@ -14,7 +13,7 @@ class AuthMapper: IAuthMapper {
     override fun asResponse(dto: AuthDto) = with(dto){
         AuthResponse(
             authId = id.value.toString(),
-            emailOrUsername = emailOrUsername,
+            email = payload,
             password = password,
             lastPassword = lastPassword,
             updatedAt = updatedAt//?.let(Utils::formattedDate),

@@ -5,7 +5,9 @@ import com.dudegenuine.app.entity.Images
 import com.dudegenuine.app.entity.Users
 import com.dudegenuine.app.mapper.contract.IImageMapper
 import com.dudegenuine.app.model.image.ImageCreateRequest
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IImageRepository
+import com.dudegenuine.app.repository.validation.BadRequestException
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -22,10 +24,11 @@ class ImageRepository(
         transaction { SchemaUtils.create(Images) }
     }
     override fun createImage(request: ImageCreateRequest) = transaction {
+        val mProfileId = request.profileId.let(Utils::uuidOrNull) ?: throw BadRequestException()
         val dto = ImageDto.new {
             url = request.url
             role = request.role
-            profileId = EntityID(UUID.fromString(request.profileId), Users) //ProfileDto[UUID.fromString(request.profileId)]
+            profileId = EntityID(mProfileId, Users) //ProfileDto[UUID.fromString(request.profileId)]
             updatedAt = null
         }
         dto.let (mapper::asResponse)

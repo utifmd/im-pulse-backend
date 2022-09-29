@@ -15,7 +15,7 @@ import java.util.UUID
 object Verifications: UUIDTable("verifications"){
     val type = varchar("type", 127)
     val payload = varchar("payload", 36)
-    val updatedAt = long("updated_at")
+    val updatedAt = long("updated_at").nullable()
     val userId = reference("user_id", Users, ReferenceOption.CASCADE)
 }
 class VerifierDto(id: EntityID<UUID>): Entity<UUID>(id) {

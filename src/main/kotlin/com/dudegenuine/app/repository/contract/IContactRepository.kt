@@ -12,4 +12,5 @@ interface IContactRepository {
     fun createContact(request: ContactCreateRequest): ContactResponse
     fun updateContact(request: ContactUpdateRequest): ContactResponse
     fun isUsernameExist(request: String): Boolean
+    fun readEmail(payload: String): String
 }

@@ -23,7 +23,7 @@ fun Route.signUp(
     service: IAuthService){
     post("api/auth/sign-up") {
         val request: AuthRegisterRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException()
+            throw BadRequestException(e.localizedMessage)
         }
         service.onSignUp(request)
 
@@ -34,7 +34,7 @@ fun Route.signIn(
     service: IAuthService){
     post("api/auth/sign-in"){
         val request: AuthLoginRequest = try { call.receive() } catch (e: Exception){
-            throw BadRequestException()
+            throw BadRequestException(e.localizedMessage)
         }
         val token = service.onSignIn(request)
         call.respond(

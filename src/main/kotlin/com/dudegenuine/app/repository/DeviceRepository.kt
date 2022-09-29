@@ -5,12 +5,12 @@ import com.dudegenuine.app.entity.Devices
 import com.dudegenuine.app.entity.UserDto
 import com.dudegenuine.app.mapper.contract.IDeviceMapper
 import com.dudegenuine.app.model.device.DeviceRequest
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IDeviceRepository
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
 
 /**
  * Mon, 12 Sep 2022
@@ -23,10 +23,11 @@ class DeviceRepository(
     }
     override fun createDevice(request: DeviceRequest) = transaction{
         val (mContent, mType, mUserId) = request
+        val userId = mUserId.let(Utils::uuidOrNull) ?: throw BadRequestException()
         val dto = DeviceDto.new {
             token = mContent
             type = mType
-            userDto = UserDto[UUID.fromString(mUserId)]
+            userDto = UserDto[userId]
             updatedAt = null
         }
         dto.let(mapper::asResponse)

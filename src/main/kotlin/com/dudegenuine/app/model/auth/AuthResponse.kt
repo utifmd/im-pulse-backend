@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AuthResponse(
     val authId: String,
-    val emailOrUsername: String,
+    val email: String,
     val password: String,
     val lastPassword: String,
     val updatedAt: Long?

@@ -1,6 +1,54 @@
 # im-pulse-backend JSON REST API
 
 ## Auth
+### REGISTER Auth
+Request:
+- Method: POST
+- Endpoint: `/api/auth/sign-up`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "email": "String, Unique",
+    "password": "String"
+  }
+  ```
+Response:
+- Status Code: `Integer`
+### LOGIN Auth
+Request:
+- Method: POST
+- Endpoint: `/api/auth/sign-in`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "payload": "String, Unique (email, phone, username)",
+    "password": "String"
+  }
+  ```
+Response:
+```json
+{
+  "data": "String, Unique Token Key"
+}
+```
+### CLAIM Auth
+Request:
+- Method: GET
+- Endpoint: `/api/auth/claim-auth-id`
+
+Response:
+```json
+{
+  "data": "String, Primary Unique UUID Key"
+}
+```
+### LOGIN Auth
 ## Blacklist
 ### CREATE Blacklist
 Request:
@@ -444,4 +492,123 @@ Response:
 }
 ```
 ## User
+### CREATE User
+Request:
+- Method: POST
+- Endpoint: `/api/users`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "firstName": "String",
+    "lastName": "String",
+    "contactId": "String, Foreign Unique UUID",
+    "authId": "String, Foreign Unique UUID"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "userId": "String, Primary Unique UUID Key",
+    "firstName": "String, Nullable",
+    "lastName": "String, Nullable",
+    "contact": "Contact",
+    "about": "String, Nullable",
+    "status": "String, Nullable",
+    "picture": "Image, Nullable",
+    "region": "String, Nullable",
+    "role": "Role, Nullable",
+    "devices": [
+      "Device"
+    ],
+    "createdAt": "Long",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+### READ User
+Request:
+- Method: GET
+- Endpoint: `/api/users/{userId}`
+
+Response:
+```json
+{
+  "data": {
+    "userId": "String, Primary Unique UUID Key",
+    "firstName": "String, Nullable",
+    "lastName": "String, Nullable",
+    "contact": "Contact",
+    "about": "String, Nullable",
+    "status": "String, Nullable",
+    "picture": "Image, Nullable",
+    "region": "String, Nullable",
+    "role": "Role, Nullable",
+    "devices": [
+      "Device"
+    ],
+    "createdAt": "Long",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
 ## Verifier
+### CREATE Verifier
+Request:
+- Method: POST
+- Endpoint: `/api/verifiers`
+- Header:
+  - Content-Type: `application/json`
+  - Accept: `application/json`
+- Body:
+  ```json
+  {
+    "type": "String",
+    "payload": "String",
+    "userId": "String, Foreign Unique UUID"
+  }
+  ```
+Response:
+```json
+{
+  "data": {
+    "type": "String",
+    "payload": "String",
+    "updatedAt": "Long, Nullable"
+  }
+}
+```
+### DELETE Verifier
+Request:
+- Method: DELETE
+- Endpoint: `/api/verifiers/{verifierId}`
+
+Response:
+```json
+{
+  "data": "Primary, Unique UUID Key"
+}
+```
+### LIST Verifier
+Request:
+- Method: GET
+- Endpoint: `/api/verifiers/{userId}`
+- Params
+  - page: `Integer`
+  - size: `Integer`
+  
+Response:
+```json
+{
+  "data": [
+    {
+      "type": "String",
+      "payload": "String",
+      "updatedAt": "Long, Nullable"
+    }
+  ]
+}
+```

@@ -28,6 +28,7 @@ val repositoryModule = module {
     single<IConversationRepository>{ ConversationRepository(get(), get()) }
     single<IParticipantRepository>{ ParticipantRepository() }
     single<IBlacklistRepository>{ BlacklistRepository(get()) }
+    single<IVerifierRepository>{ VerifierRepository(get()) }
 }
 
 val mapperModule = module {
@@ -43,6 +44,7 @@ val mapperModule = module {
     single<IConversationMapper>{ ConversationMapper(get()) }
     single<IParticipantMapper>{ ParticipantMapper(get()) }
     single<IBlacklistMapper>{ BlacklistMapper(get()) }
+    single<IVerifierMapper>{ VerifierMapper() }
 }
 
 val dependencyModule = module {

@@ -9,16 +9,17 @@ import com.dudegenuine.app.model.auth.AuthUpdateRequest
 import com.dudegenuine.app.model.security.AuthTokenClaim
 import com.dudegenuine.app.model.security.AuthTokenConfig
 import com.dudegenuine.app.model.security.SaltedHash
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IAuthRepository
 import com.dudegenuine.app.repository.contract.IAuthRepository.Companion.PASSWORD_MISMATCH
 import com.dudegenuine.app.repository.dependency.IHashDependency
 import com.dudegenuine.app.repository.dependency.ITokenDependency
 import com.dudegenuine.app.repository.validation.AlreadyExistException
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
 import com.dudegenuine.app.repository.validation.UnAuthorizationException
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
 
 /**
  * Tue, 06 Sep 2022
@@ -41,53 +42,52 @@ class AuthRepository(
             .map(mapper::asResponse)
     }
     override fun readAuth(authId: String) = transaction {
-        val dto = AuthDto.findById(UUID.fromString(authId)) ?: throw NotFoundException()
+        val id = authId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = AuthDto.findById(id) ?: throw NotFoundException()
 
         dto.let(mapper::asResponse)
     }
     override fun deleteAuth(authId: String) = transaction {
-        val dto = AuthDto.findById(UUID.fromString(authId)) ?: throw NotFoundException()
+        val id = authId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = AuthDto.findById(id) ?: throw NotFoundException()
 
-        dto.run {
-            delete()
-            id.value.toString()
-        }
+        dto.delete()
+        dto.id.value.toString()
     }
-    override fun onSignIn(request: AuthLoginRequest) = transaction {
-        val (mEmailOrUsername, mPassword) = request
-        val auths = AuthDto.find{ Auths.emailOrUsername eq mEmailOrUsername }
-        val dto = auths.firstOrNull() ?: throw NotFoundException()
-
+    override fun onSignIn(request: AuthLoginRequest): String {
+        val dto = AuthDto.find{ Auths.payload eq request.payload }.firstOrNull() ?: throw NotFoundException()
         val saltedHash = SaltedHash(dto.password, dto.salt)
-        if (!hashDependency.verify(mPassword, saltedHash))
+
+        if (!hashDependency.verify(request.password, saltedHash))
             throw UnAuthorizationException(PASSWORD_MISMATCH)
 
-        tokenDependency.generate(
+        return tokenDependency.generate(
             authTokenConfig, AuthTokenClaim("authId", dto.id.value.toString())
         )
     }
     override fun onSignUp(request: AuthRegisterRequest) = transaction {
         val (mEmail, mPassword) = request
         val (mHashedPassword, mSalt) = hashDependency.generateSaltedHash(mPassword)
+        val auths = AuthDto.find{ Auths.payload eq mEmail }
 
-        val auths = AuthDto.find{ Auths.emailOrUsername eq mEmail } //(Auths.emailOrUsername eq mEmail) or (Auths.username eq mUsername)
         if (!auths.empty()) throw AlreadyExistException()
 
         AuthDto.new {
-            emailOrUsername = mEmail
+            payload = mEmail
             password = mHashedPassword
             lastPassword = mHashedPassword
             salt = mSalt
             updatedAt = null
         }
-        Unit //dto.let(mapper::asResponse)
+        Unit
     }
     override fun updateAuth(request: AuthUpdateRequest) = transaction {
         val (currentAuthId, mEmailOrUsername, mPassword, mLastPassword) = request
-        val dto = AuthDto.findById(UUID.fromString(currentAuthId)) ?: throw NotFoundException()
+        val id = currentAuthId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = AuthDto.findById(id) ?: throw NotFoundException()
 
         dto.apply {
-            emailOrUsername = mEmailOrUsername
+            payload = mEmailOrUsername
             password = mPassword
             lastPassword = mLastPassword
             updatedAt = System.currentTimeMillis()

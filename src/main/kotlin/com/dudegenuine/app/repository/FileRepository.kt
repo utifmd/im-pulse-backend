@@ -4,24 +4,18 @@ import com.dudegenuine.app.entity.FileDto
 import com.dudegenuine.app.entity.Files
 import com.dudegenuine.app.mapper.contract.IFileMapper
 import com.dudegenuine.app.model.file.FileResponse
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IFileRepository
-import com.dudegenuine.app.repository.contract.IFileRepository.Companion.ORIGINAL
 import com.dudegenuine.app.repository.contract.IFileRepository.Companion.THUMBNAIL
 import com.dudegenuine.app.repository.validation.BadRequestException
-import com.dudegenuine.app.repository.validation.InternalErrorException
 import com.dudegenuine.app.repository.validation.NotFoundException
 import io.ktor.http.content.*
 import net.coobird.thumbnailator.Thumbnails
-import net.coobird.thumbnailator.filters.Canvas
-import net.coobird.thumbnailator.geometry.Position
 import net.coobird.thumbnailator.geometry.Positions
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.awt.Color
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.util.*
 
 /**
  * Wed, 07 Sep 2022
@@ -62,13 +56,14 @@ class FileRepository(
         responses
     }
     override fun readFile(id: String) = transaction {
-        val dto = FileDto.findById(UUID.fromString(id)) ?: throw NotFoundException()
+        val fileId = id.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = FileDto.findById(fileId) ?: throw NotFoundException()
 
         dto.let(mapper::asFile)
     }
     override fun deleteFile(id: String) = transaction {
-        val files = FileDto.findById(UUID.fromString(id))
-        val dto = files ?: throw NotFoundException()
+        val fileId = id.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = FileDto.findById(fileId) ?: throw NotFoundException()
 
         dto.run {
             delete()

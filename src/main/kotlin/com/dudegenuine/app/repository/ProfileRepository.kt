@@ -7,7 +7,9 @@ import com.dudegenuine.app.mapper.contract.IProfileMapper
 import com.dudegenuine.app.model.profile.ProfileCreateRequest
 import com.dudegenuine.app.model.profile.ProfileResponse
 import com.dudegenuine.app.model.profile.ProfileUpdateRequest
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IProfileRepository
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -26,25 +28,26 @@ class ProfileRepository(
     }
     override fun createProfile(request: ProfileCreateRequest) = transaction {
         val (mAbout, mStatus, mRegion, mUserId) = request
-
+        val userId = mUserId.let(Utils::uuidOrNull) ?: throw BadRequestException()
         val dto = ProfileDto.new {
             about = mAbout
             status = mStatus
             region = mRegion
-            userDto = UserDto[UUID.fromString(mUserId)]
+            userDto = UserDto[userId]
             updatedAt = null
         }
         dto.let(mapper::asResponse)
     }
     override fun readProfile(profileId: String) = transaction {
-        val dto = ProfileDto.findById(UUID.fromString(profileId)) ?: throw NotFoundException()
+        val id = profileId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = ProfileDto.findById(id) ?: throw NotFoundException()
 
         dto.let(mapper::asResponse)
     }
     override fun updateProfile(request: ProfileUpdateRequest) = transaction {
         val (mId, mAbout, mStatus, mRegion) = request
-
-        val dto = ProfileDto.findById(UUID.fromString(mId)) ?: throw NotFoundException()
+        val id = mId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = ProfileDto.findById(id) ?: throw NotFoundException()
         dto.apply {
             about = mAbout
             status = mStatus

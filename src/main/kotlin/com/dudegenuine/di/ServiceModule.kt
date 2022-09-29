@@ -11,7 +11,7 @@ import org.koin.dsl.module
 val serviceModule = module {
 
     single<IAuthService> {
-        AuthService(get())
+        AuthService(get(), get())
     }
 
     single<IUserService> {
@@ -52,5 +52,9 @@ val serviceModule = module {
 
     single<IBlacklistService> {
         BlacklistService(get())
+    }
+
+    single<IVerifierService> {
+        VerifierService(get())
     }
 }

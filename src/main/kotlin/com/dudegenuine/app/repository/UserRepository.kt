@@ -3,14 +3,14 @@ package com.dudegenuine.app.repository
 import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IUserMapper
 import com.dudegenuine.app.model.user.*
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IUserRepository
 import com.dudegenuine.app.repository.validation.AlreadyExistException
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
 import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.UUID
 
 /**
  * Thu, 01 Sep 2022
@@ -23,7 +23,9 @@ class UserRepository(
     }
     override fun createUser(request: UserCreateRequest) = transaction {
         val (mFirstName, mLastName, mContactId, mAuthId) = request
-        val users = UserDto.find{ Users.authId eq UUID.fromString(mAuthId) }
+        val myAuthId = mAuthId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val myContactId = mContactId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val users = UserDto.find{ Users.authId eq myAuthId }
         if(!users.empty()) throw AlreadyExistException()
 
         val dto = UserDto.new {
@@ -31,13 +33,14 @@ class UserRepository(
             lastName = mLastName
             createdAt = System.currentTimeMillis()
             updatedAt = null
-            contactDto = ContactDto[UUID.fromString(mContactId)]
-            authId = EntityID(UUID.fromString(mAuthId), Auths)
+            contactDto = ContactDto[myContactId]
+            authId = EntityID(myAuthId, Auths)
         }
         dto.let(mapper::asUserResponse)
     }
     override fun deleteUser(userId: String) = transaction {
-        val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()
+        val mUserId = userId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = UserDto.findById(mUserId) ?: throw NotFoundException()
 
         dto.run {
             delete()
@@ -45,7 +48,8 @@ class UserRepository(
         }
     }
     override fun readUser(userId: String) = transaction {
-        val dto = UserDto.findById(UUID.fromString(userId)) ?: throw NotFoundException()
+        val mUserId = userId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val dto = UserDto.findById(mUserId) ?: throw NotFoundException()
 
         dto.let(mapper::asUserResponse)
     }

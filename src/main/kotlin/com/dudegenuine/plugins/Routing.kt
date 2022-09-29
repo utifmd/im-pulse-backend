@@ -17,6 +17,7 @@ fun Application.configureRouting() {
     val contactService: IContactService by inject()
     val converseService: IConversationService by inject()
     val messageService: IMessageService by inject()
+    val verifierService: IVerifierService by inject()
     val blacklistService: IBlacklistService by inject()
 
     install(Routing){
@@ -48,9 +49,7 @@ fun Application.configureRouting() {
         }
         with(userService){
             apply(::addUser)
-            apply(::findUser)
-            apply(::removeUser)
-            apply(::pagedUsers)
+            apply(::findUser) //apply(::pagedUsers) apply(::removeUser)
         }
         with(profileService){
             apply(::addProfile)
@@ -68,6 +67,12 @@ fun Application.configureRouting() {
         with(deviceService){
             apply(::addDevice)
             apply(::removeDevice)
+        }
+        with(verifierService){
+            apply(::add)
+            //apply(::find)
+            apply(::remove)
+            apply(::paged)
         }
         with(blacklistService){
             apply(::addBlacklist)

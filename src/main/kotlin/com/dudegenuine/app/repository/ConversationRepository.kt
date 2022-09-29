@@ -4,17 +4,17 @@ import com.dudegenuine.app.entity.*
 import com.dudegenuine.app.mapper.contract.IConversationMapper
 import com.dudegenuine.app.model.conversation.session.ConversationSession
 import com.dudegenuine.app.model.participant.ParticipantCreateRequest
+import com.dudegenuine.app.repository.common.Utils
 import com.dudegenuine.app.repository.contract.IConversationRepository
 import com.dudegenuine.app.repository.contract.IParticipantRepository
 import com.dudegenuine.app.repository.contract.IParticipantRepository.Companion.RECIPIENT
 import com.dudegenuine.app.repository.contract.IParticipantRepository.Companion.SENDER
+import com.dudegenuine.app.repository.validation.BadRequestException
 import com.dudegenuine.app.repository.validation.NotFoundException
 import io.ktor.websocket.*
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -29,7 +29,7 @@ class ConversationRepository(
     init {
         transaction { SchemaUtils.create(Conversations) }
     }
-    override fun onSessionConnect(session: ConversationSession/*, onRequireCreateParticipants: suspend Transaction.( ParticipantCreateRequest, ParticipantCreateRequest) -> Unit*/): String {
+    override fun onSessionConnect(session: ConversationSession): String {
         val (_, mFrom, mTo, mSocket) = session
 
         activeSessions[mFrom] = mSocket
@@ -66,28 +66,30 @@ class ConversationRepository(
     }
     private fun requireCreateConversation(conversationSession: ConversationSession): String /*= transaction*/ {
         val (mConverseIdOrNull, mUserId, mTargetUserId) = conversationSession
+        val myUserId = mUserId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        val myTargetUserId = mTargetUserId.let(Utils::uuidOrNull) ?: throw BadRequestException()
 
         if (mConverseIdOrNull != null) /*return@transaction*/ return mConverseIdOrNull // got from chat list
 
         /* prevent race condition */
         val dto = ConversationDto.find{
-            ((Conversations.userId eq UUID.fromString(mUserId)) and (Conversations.targetUserId eq UUID.fromString(mTargetUserId))) or
-                    ((Conversations.userId eq UUID.fromString(mTargetUserId)) and (Conversations.targetUserId eq UUID.fromString(mUserId))) }
+            ((Conversations.userId eq myUserId) and (Conversations.targetUserId eq myTargetUserId)) or
+                    ((Conversations.userId eq myTargetUserId) and (Conversations.targetUserId eq myUserId)) }
 
         // [race condition] both create new in the sametime
         if (!dto.empty()) /*return@transaction*/ return dto.firstOrNull()?.id?.value.toString()
 
         val conv = ConversationDto.new {
             createdAt = System.currentTimeMillis() //participants = ParticipantDto[UUID.fromString("")] isRead = false targetUserDto = UserDto[UUID.fromString(mTargetUserId)] userDto = UserDto[UUID.fromString(mUserId)]
-            targetUserId = EntityID(UUID.fromString(mTargetUserId), Users)
-            userId = EntityID(UUID.fromString(mUserId), Users)
+            targetUserId = EntityID(myTargetUserId, Users)
+            userId = EntityID(myUserId, Users)
         }
         return conv.id.value.toString()
     }
     override fun readConversations(
         userId: String, pageAndSize: Pair<Long, Int>) = transaction {
         val (page, size) = pageAndSize
-        val meaningId = UUID.fromString(userId)
+        val meaningId = userId.let(Utils::uuidOrNull) ?: throw BadRequestException()
 
         ConversationDto
             .find{
@@ -98,7 +100,8 @@ class ConversationRepository(
             .map(mapper::asResponse)
     }
     override fun deleteConversation(conversationId: String) = transaction {
-        ConversationDto.findById(UUID.fromString(conversationId))
+        val mConversationId = conversationId.let(Utils::uuidOrNull) ?: throw BadRequestException()
+        ConversationDto.findById(mConversationId)
             ?.run {
                 delete()
                 id.value.toString()
