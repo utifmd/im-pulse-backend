@@ -1,4 +1,4 @@
-# im-pulse-backend JSON REST API
+# im-pulse-backend JSON RESTFUL API
 
 ## Auth
 ### REGISTER Auth
@@ -48,7 +48,6 @@ Response:
   "data": "String, Primary Unique UUID Key"
 }
 ```
-### LOGIN Auth
 ## Blacklist
 ### CREATE Blacklist
 Request:
